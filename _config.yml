@@ -1,0 +1,67 @@
+# Site
+title: 🔮 三进制黑洞 🌌
+subtitle: '生活 · 工作 · 随笔'
+description: '三进制黑洞 - 记录生活与工作的个人博客'
+keywords: '博客,生活,工作,随笔'
+author: 吴佳奇
+language: zh-CN
+timezone: Asia/Shanghai
+
+# URL
+url: https://wonelog.com
+root: /
+permalink: :year/:month/:day/:title/
+
+# Directory
+source_dir: source
+public_dir: public
+tag_dir: tags
+archive_dir: archives
+category_dir: categories
+
+# Writing
+new_post_name: :title.md
+default_layout: post
+external_link:
+  enable: true
+  field: site
+highlight:
+  enable: true
+  line_number: true
+
+# Home
+index_generator:
+  per_page: 10
+  order_by: -date
+
+# Category & Tag
+default_category: uncategorized
+
+# Date format
+date_format: YYYY-MM-DD
+time_format: HH:mm:ss
+
+# Pagination
+per_page: 10
+pagination_dir: page
+
+# Extensions
+theme: hexo-theme-wang
+
+# Search
+search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
+
+# Feed
+feed:
+  type: atom
+  path: atom.xml
+  limit: 20
+  content: true
+
+# Sitemap
+sitemap:
+  path: sitemap.xml
