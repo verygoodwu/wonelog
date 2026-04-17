@@ -1,0 +1,40 @@
+<div class="first-screen">
+    <div class="lefttop-container">
+        <div class="site-date">
+            <%- partial('partials/date.ejs') %>
+        </div>
+        <div class="container">
+            <div class="site">
+                <h1 class="site-title"><%- config.title %></h1>
+                <img class="avatar <%= theme.avatar.isround ? 'avatar-round' : '' %>" src="<%- url_for(theme.avatar.src) %>" alt="Avatar" style="width:50px;">
+                <h2 class="site-author"><%- config.author %></h2>
+                <h3 class="site-subtitle"><%- config.subtitle %></h3>
+            </div>
+        </div>
+    </div>
+    <div class="rightbottom-container">
+        <div class="site-time">
+            <%- partial('partials/time.ejs') %>
+        </div>
+        <div class="container">
+            <%= __('social_links')%>
+            <ul class="social_links">
+                <% for (let key in theme.social_links) { %>
+                    <li>
+                        <a href="<%= theme.social_links[key].split('||')[0].trim() %>">
+                            <% if (theme.social_links[key].split('||')[1]) { %>
+                                <img src="<%= url_for('images/social_links/') %><%= theme.social_links[key].split('||')[1].trim() %>.svg" class="menu-icon" alt="<%= key %>">
+                            <% } %>
+                        </a>
+                    </li>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+    <% if (theme.typed_text && theme.typed_text.enable !== false) { %>
+    <div class="description-io">
+        <h2 id="typed-output" data-text="<%= config.description %>"></h2>
+    </div>
+    <%- js('js/typed-effect.js') -%>
+    <% } %>
+</div>

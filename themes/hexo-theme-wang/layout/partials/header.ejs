@@ -1,0 +1,28 @@
+<header>
+    <nav>
+        <ul>
+            <% for (let key in theme.menu) { %>
+                <li>
+                    <a href="<%= theme.menu[key].split('||')[0].trim() %>" rel="noopener">
+                        <% if (theme.menu[key].split('||')[1]) { %>
+                            <img src="<%= url_for('images/menu_ico/') %><%= theme.menu[key].split('||')[1].trim() %>.svg" class="menu-icon" alt="<%= __(key) || key %>">
+                        <% } %>
+                        <%= __(key) || key %>
+                    </a>
+                </li>
+            <% } %>
+            <% if (theme.search && theme.search.enable) { %>
+                <li>
+                    <button class="search-toggle-btn" aria-label="<%= __('search.toggle_search') %>">
+                        <img src="<%= url_for('images/menu_ico/search.svg') %>" class="menu-icon" alt="<%= __('search') %>">
+                        <%= __('searchs') || "Search" %>
+                    </button>
+                </li>
+            <% } %>
+        </ul>
+    </nav>
+</header>
+<%- js('js/header') -%>
+<% if (theme.search && theme.search.enable) { %>
+    <%- js('js/search') -%>
+<% } %>

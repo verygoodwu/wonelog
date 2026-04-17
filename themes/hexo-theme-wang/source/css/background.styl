@@ -1,0 +1,27 @@
+#starry-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+    background-color: transparent; // 确保背景透明
+}
+
+#stars-canvas {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+// 在低端设备上减少动画效果
+@media (prefers-reduced-motion: reduce) {
+    #stars-canvas {
+        animation: none !important;
+    }
+}

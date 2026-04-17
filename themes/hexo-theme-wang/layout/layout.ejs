@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html class="dark" lang="<%= config.language || 'en' %>" prefix="og: http://ogp.me/ns# 
+fb: http://ogp.me/ns/fb#
+article: http://ogp.me/ns/article#">
+<head>
+    <%- partial('partials/head.ejs',{cache: true}) -%>
+</head>
+<body>
+<main>
+    <%- partial('partials/alert.ejs') -%>
+    <%- partial('partials/header.ejs')%>
+    <% if (theme.search && theme.search.enable) { %>
+        <!-- 搜索模态框 -->
+        <div id="search-modal" class="search-modal">
+          <div class="search-modal-content">
+            <div class="search-header">
+              <form class="search-form" action="#" onsubmit="return false;">
+                <input type="text" id="search-input" placeholder="<%= __('search.placeholder') %>" autocomplete="off">
+                <button type="button" class="search-close-btn" aria-label="<%= __('search.close') %>">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </form>
+            </div>
+            <div id="search-results"></div>
+          </div>
+        </div>
+
+        <script>
+        // 向全局对象添加i18n数据，以便search.js使用
+        window.WANG_THEME = window.WANG_THEME || {};
+        window.WANG_THEME.i18n = {
+          search: {
+            noResults: '<%= __("search.no_results") %>',
+            loading: '<%= __("search.loading") %>',
+            placeholder: '<%= __("search.placeholder") %>',
+            close: '<%= __("search.close") %>',
+            shortcut_tip: '<%= __("search.shortcut_tip") %>',
+            toggle_search: '<%= __("search.toggle_search") %>',
+            error_loading: '<%= __("search.error_loading") %>'
+          }
+        };
+        </script>
+    <% } %>
+    <%- body %>
+    <%- partial('partials/footer.ejs')-%>
+    <%- js('js/background') -%>
+    <% if (theme.search && theme.search.enable) { %>
+        <%- js('js/search') -%>
+    <% } %>
+</main>
+</body>
+</html>

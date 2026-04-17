@@ -1,0 +1,102 @@
+body{
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden;
+    background: radial-gradient(ellipse at bottom, #1c2331 0%, #090a0f 100%);
+    color: #ffffff;  // 添加默认文字颜色
+    font-family: 'DouyinSans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+.avatar-round {
+    border-radius: 25px;
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    display: block;
+}
+// 添加文字相关的样式
+h1, h2, h3, h4, h5, h6 {
+    color: #e1e1ff;  // 标题使用略微偏紫的白色
+}
+
+a {
+    color: #00ffff;  // 链接使用青色
+    list-style none;
+    &:hover {
+        color: #66ffff;  // 悬停时颜色变亮
+    }
+}
+
+p {
+    color: #cccccc;  // 段落文字使用浅灰色
+}
+
+p, h1, h2, h3, h4, h5, h6, span, div {
+    font-family: inherit;
+}
+
+.typed-cursor, .cursor {
+  font-size: 1.5rem;
+  color: #00ffff;
+  animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.description-io {
+  position: relative;
+  z-index: 1000;  // 设置最高的z-index
+  background-color: rgba(0, 0, 0, 0.7);  // 添加半透明背景
+  padding: 1rem;  // 添加内边距
+  border-radius: 8px;  // 添加圆角
+  text-align: center;  // 居中文本
+  color: #ffffff;  // 设置文本颜色
+}
+
+// 滚动条样式
+::-webkit-scrollbar {
+    width: 10px;  // 稍微加宽滚动条
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #2c2c2c;  // 深灰色轨道
+}
+
+::-webkit-scrollbar-thumb {
+    background: #666;  // 中灰色滑块
+    border-radius: 10px;
+    border: 2px solid #2c2c2c;  // 添加边框营造立体感
+
+    &:hover {
+        background: #888;  // 悬停时变亮
+    }
+}
+
+@import fonts
+@import background
+@import first_screen
+@import header
+@import footer
+@import archives
+@import paginator
+@import page
+@import tags
+@import categories
+@import links
+@import search
+@import post
+@import time
+@import date
+@import sidebar
+@import code
+@import copy
+@import ccbyncsa
+@import alert

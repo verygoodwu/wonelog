@@ -1,0 +1,34 @@
+// 标签云样式
+.tags-cloud {
+  display: flex
+  flex-wrap: wrap
+  justify-content: center
+  gap: 15px
+  padding: 20px
+  
+  .tag-item {
+    background: rgba(255, 255, 255, 0.1)
+    padding: 8px 15px
+    border-radius: 20px
+    color: #00ffff
+    transition: all 0.3s ease
+    border: 1px solid rgba(255, 255, 255, 0.2)
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.2)
+      transform: translateY(-2px)
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12)
+    }
+    
+    small {
+      opacity: 0.8
+      margin-left: 5px
+    }
+  }
+}
+.tags-page{
+  h1{
+    text-align: center;
+    margin-top:4em;
+  }  
+}

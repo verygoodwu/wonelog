@@ -1,0 +1,41 @@
+Home: 首页
+Archives: 归档
+Categories: 分类
+Tags: 标签
+About: 关于
+Works: 工作
+Links: 友链
+PoweredBy: 由 Hexo 驱动
+BuiltWith: Wang 主题构建
+RSS: RSS订阅
+Travelling: 开往
+searchs: 搜索
+
+social_links: 联系
+
+paginator:
+  prev: 上一页
+  next: 下一页
+search:
+  no_results: 没有找到相关结果
+  loading: 正在加载...
+  placeholder: 输入关键词搜索
+  results: 搜索结果
+  error_loading: 加载搜索数据失败
+  close: 关闭
+  shortcut_tip: 按 ESC 关闭
+  toggle_search: 打开搜索
+post:
+  category: 分类
+  posted_on: 发布于
+  read_more: 阅读全文
+  word_count: 字数
+  reading_time: 阅读时长
+  minutes: 分钟
+  last_updated: 最后更新于
+  prev_post: 上一篇
+  next_post: 下一篇
+  license: 授权协议
+  author: 作者
+  title: 标题
+  published: 发布于

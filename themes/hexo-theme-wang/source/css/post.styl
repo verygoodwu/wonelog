@@ -1,0 +1,318 @@
+.post-container {
+  max-width: 900px
+  margin: 2.5rem auto // 增加上下边距
+  padding: 2.5rem
+  background: rgba(15, 15, 25, 0.15) // 轻微调整透明度
+  backdrop-filter: blur(18px) // 增强模糊效果
+  -webkit-backdrop-filter: blur(18px)
+  border: 1px solid rgba(255, 255, 255, 0.12)
+  border-radius: 16px // 增大圆角
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.15),
+    0 0 20px rgba(0, 0, 0, 0.1) // 双层阴影增强深度感
+  transition: transform 0.3s ease, box-shadow 0.3s ease
+
+  &:hover {
+    box-shadow:
+      0 15px 50px rgba(0, 0, 0, 0.2),
+      0 0 25px rgba(0, 0, 0, 0.15)
+    transform: translateY(-5px)
+  }
+}
+
+// 新增响应式设计
+@media (max-width: 768px)
+  .post-container
+    max-width: 95%
+    padding: 1rem
+
+.post-title {
+  color: #ffffff
+  font-size: 2.4rem
+  margin-bottom: 1.8rem
+  text-align: center
+  font-weight: 600
+  letter-spacing: 0.02em
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.1) // 添加微妙文字阴影
+}
+
+.post-meta {
+  color: #a8a8b8
+  text-align: center
+  margin-bottom: 2.5rem
+  font-size: 0.95rem
+  font-style: italic
+}
+
+.post-content {
+  color: #e4e4e4
+  line-height: 1.8
+  font-size: 1.1rem
+  letter-spacing: 0.01em
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #ffffff
+    margin: 2.5rem 0 1.2rem
+    font-weight: 700
+    position: relative
+    letter-spacing: 0.02em
+
+    &::after {
+      content: ""
+      position: absolute
+      bottom: -6px
+      left: 0
+      width: 60px // 增加宽度
+      height: 3px // 增加高度
+      background: linear-gradient(90deg, rgba(127, 166, 255, 0.8), rgba(127, 166, 255, 0.2)) // 添加渐变
+      border-radius: 3px
+    }
+  }
+
+  p {
+    margin-bottom: 1.5rem
+    text-align: justify
+
+    code, pre {
+      text-align: left
+    }
+  }
+
+  blockquote {
+    margin: 1.5rem 0
+    padding: 1.2rem 1.5rem
+    border-left: 4px solid rgba(0, 255, 255, 0.3) // 使用青色边框
+    background: rgba(0, 0, 0, 0.25)
+    border-radius: 0 10px 10px 0
+    font-style: italic
+
+    p {
+      margin-bottom: 0
+    }
+  }
+
+  ul, ol {
+    padding-left: 1.5rem
+    margin: 1rem 0
+
+    li {
+      margin: 0.5rem 0
+    }
+  }
+  .highlight{
+   overflow-x: auto;
+   max-width: 100%;
+   border-radius: 10px;
+   margin: 1.5rem 0;
+}
+  code {
+    background: rgba(40, 44, 68, 0.5)
+    color: #ff7edb
+    padding: 0.2em 0.4em
+    border-radius: 3px
+    font-family: 'JetBrains Mono', Consolas, Monaco, monospace
+    font-size: 0.9em
+    letter-spacing: 0
+    border: 1px solid rgba(100, 100, 255, 0.15)
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1)
+  }
+
+  // 确保行内代码与代码块区分
+  p > code, li > code, td > code {
+    font-size: 0.85em;
+    white-space: nowrap;
+  }
+
+  pre {
+    background: rgba(40, 44, 68, 0.3)
+    padding: 0
+    border-radius: 10px
+    overflow: hidden
+    margin: 1.5rem 0
+    border: 1px solid rgba(100, 100, 255, 0.12)
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25)
+    position: relative
+    transition: all 0.3s ease
+
+    &:hover {
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3)
+    }
+
+    &::before, &::after {
+      display: none
+    }
+
+    code {
+      background: none
+      padding: 0.5em
+      border: none
+      box-shadow: none
+      color: inherit
+      text-align: left // 确保代码是左对齐的
+      font-family: 'JetBrains Mono', Consolas, Monaco, monospace
+    }
+  }
+
+  // 确保highlight内的样式不受post-content影响
+  .highlight pre,
+  .highlight code,
+  .highlight .line {
+    text-align: left !important // 强制左对齐
+    justify-content: flex-start !important // 防止 justify 样式影响
+  }
+
+  img {
+    display: block
+    max-width: 100%
+    border-radius: 8px
+    margin: 1.5rem auto
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15)
+  }
+
+  table {
+    width: 100%
+    border-collapse: collapse
+    margin: 1.5rem 0
+
+    th, td {
+      padding: 0.75rem
+      border: 1px solid rgba(255, 255, 255, 0.1)
+      background: rgba(255, 255, 255, 0.02)
+      text-align: center
+    }
+
+    th {
+      background: rgba(127, 166, 255, 0.1)
+    }
+  }
+
+  hr {
+    border: none
+    height: 1px
+    background: rgba(255, 255, 255, 0.1)
+    margin: 2rem 0
+  }
+
+  a {
+    color: #00ffff
+    text-decoration: none
+    border-bottom: 1px dashed rgba(0, 255, 255, 0.4)
+    transition: all 0.3s ease
+    position: relative
+    padding: 0 2px
+
+    &:hover {
+      color: #80ffff
+      border-bottom-style: solid
+      background: rgba(0, 255, 255, 0.08)
+      border-radius: 2px
+    }
+  }
+
+  strong, b {
+    color: #ffc66d  // 为 strong/b 标签设置特殊的橙黄色调
+  }
+  em, i {
+    color: #8be9fd  // 新增：为 emphasis / italic 标签着色
+  }
+  u {
+    text-decoration: underline
+    color: #e06c75  // 新增：为下划线文本设定红色调
+  }
+  mark {
+    background: #ffeb3b
+    color: #000
+    padding: 0.1em 0.3em
+    border-radius: 3px
+  }
+  del {
+    color: #f8f8f2
+    text-decoration: line-through
+  }
+  ins {
+    color: #50fa7b
+    text-decoration: none
+  }
+  sub, sup {
+    color: #bd93f9
+  }
+
+  strong, b {
+    color: #ffc66d  // 为 strong/b 标签设置特殊的橙黄色调
+  }
+}
+
+// 新增：文章特殊标签样式，解决大部分文字都是白色的问题
+.post-content .special-tag {
+  background: linear-gradient(45deg, #7fa6ff, #00ffff)
+  color: #000
+  padding: 0.2em 0.5em
+  border-radius: 4px
+  font-weight: bold
+  display: inline-block
+  margin: 0 0.2em
+}
+
+.post-content .tag {
+  background: linear-gradient(135deg, #7367f0, #4839eb)
+  color: #fff
+  padding: 0.2em 0.6em
+  border-radius: 20px
+  font-size: 0.85rem
+  display: inline-block
+  margin: 0 0.2em
+  font-weight: 500
+  box-shadow: 0 2px 5px rgba(115, 103, 240, 0.4)
+  border: none
+}
+
+.post-pagination {
+  margin-top: 3rem
+  padding-top: 2rem
+  border-top: 1px solid rgba(255, 255, 255, 0.1)
+  display: flex
+  justify-content: space-between
+  gap: 1rem
+
+  .post-prev, .post-next {
+    flex: 1
+
+    .nav-label {
+      display: block
+      font-size: 0.9rem
+      color: #7fa6ff
+      margin-bottom: 0.5rem
+    }
+
+    a {
+      color: #ffffff
+      text-decoration: none
+      font-size: 1.1rem
+      display: block
+      padding: 1rem
+      background: rgba(255, 255, 255, 0.05)
+      border-radius: 8px
+      transition: all 0.3s ease
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1)
+        transform: translateY(-2px)
+      }
+    }
+  }
+
+  .post-next {
+    text-align: right
+  }
+
+}
+
+a {
+    color: #00ffff;
+    text-decoration: none;
+
+span {
+    color: #00ffff;
+    margin-left: 5px;
+    }
+}

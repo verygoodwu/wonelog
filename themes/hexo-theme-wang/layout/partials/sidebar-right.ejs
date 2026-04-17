@@ -1,0 +1,56 @@
+<aside class="sidebar-container sidebar-right">
+    <div class="sidebar-bg">
+        <%- partial('partials/date.ejs') %>
+        <%- partial('partials/time.ejs') %>
+    </div>
+    <div class="sidebar-bg">
+        <%- toc(page.content, {
+            class: 'toc', // 目录的 CSS 类名
+            class_item: 'toc-item', // 目录元素的 CSS 类名
+            class_link: 'toc-link', // 目录内链接的 CSS 类名
+            class_text: 'toc-text', // 目录链接内文本的 CSS 类名
+            class_child: 'toc-child', // 子目录的 CSS 类名
+            class_number: 'toc-number', // 目录序号的 CSS 类名
+            class_level: 'toc-level', // 目录层级的 CSS 类名前缀
+            list_number: true, // 是否显示编号
+            max_depth: 6, // 生成 TOC 的最大深度
+            min_depth: 1, // 生成 TOC 的最小深度
+            max_items: Infinity // 生成的 toc 的最大项目数
+          }) %>
+    </div>
+    <div class="sidebar-bg">
+        <div class="card-tags">
+            <% page.tags.forEach(function(tag) { %>
+                <a href="<%= url_for(tag.path) %>" class="tag" aria-label="标签: #<%= tag.name %>">#<%= tag.name %></a>
+            <% }) %>
+        </div>
+    </div>
+    <div>
+        <div class="categories-list">
+            <% page.categories.forEach(function(category) { %>
+                <div class="category-item">
+                    <a href="<%= url_for(category.path) %>" aria-label="分类: <%= category.name %>">
+                        <%= category.name %>
+                        <span>(<%= category.length %>)</span>
+                    </a>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</aside>
+<% if (Array.isArray(page.categories) && page.categories.length > 0) { %>
+    <% page.categories.forEach((category) => { %>
+        <% if (category && category.path && category.name !== undefined) { %>
+            <div class="category-item">
+                <a href="<%= url_for(category.path).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") %>" aria-label="分类: <%= category.name %>">
+                    <%= category.name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") %>
+                    <span>(<%= category.length !== undefined ? category.length : 0 %>)</span>
+                </a>
+            </div>
+        <% } else { %>
+            <!-- Invalid category data -->
+        <% } %>
+    <% }) %>
+<% } else { %>
+    <!-- No categories available -->
+<% } %>

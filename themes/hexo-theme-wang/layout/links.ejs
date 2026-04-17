@@ -1,0 +1,14 @@
+<div class="page-container links-page">
+    <h1><%= __('Links') %></h1>
+    <div class="links-list">
+        <% theme.friend_links.forEach(function(link) { %>
+            <article class="link-item">
+                <a href="<%= link.link %>" target="_blank">
+                    <img src="<%= link.img %>" alt="<%= link.name %>">
+                    <span class="link-name"><%= link.name %></span>
+                    <span class="link-description"><%= link.description %></span>
+                </a>
+            </article>
+        <% }) %>
+    </div>
+</div>

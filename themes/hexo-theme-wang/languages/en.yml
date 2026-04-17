@@ -1,0 +1,39 @@
+Home: Home
+Archives: Archives
+Categories: Categories
+Tags: Tags
+About: About
+Links: Links
+PoweredBy: Powered by Hexo
+BuiltWith: Built with Wang Theme
+RSS: RSS
+Travelling: Travelling
+social_links: Contact Me
+searchs: Search
+
+paginator:
+  prev: Previous
+  next: Next
+search:
+  no_results: No results found
+  loading: Loading...
+  placeholder: Search for articles
+  results: Search Results
+  error_loading: Failed to load search data
+  close: Close
+  shortcut_tip: Press ESC to close
+  toggle_search: Open search
+post:
+  category: Category
+  posted_on: Posted on
+  read_more: Read More
+  word_count: Words
+  reading_time: Reading Time
+  minutes: mins
+  last_updated: Last Updated
+  prev_post: Previous Post
+  next_post: Next Post
+  license: CC-BY-NC-SA 4.0
+  author: Author
+  title: Title 
+  published: Published

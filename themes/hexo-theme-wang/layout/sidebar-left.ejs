@@ -1,0 +1,40 @@
+<el-card class="w-1/6 fixed left-0 bg-stone-800 text-stone-200 sidebar" style=" max-height: 900px; overflow-y: auto;">
+    <template #header>
+      <div class="card-header">
+        <h2 class="text-center text-xl"><%= config.subtitle %></h2>
+      </div>
+    </template>
+    <div class="card-body flex flex-col items-center justify-center">
+      <el-avatar class="mg-auto" :size=120 src='<%= url_for() %>images/<%= theme.avatar %>' shape="circle" alt="Avatar"></el-avatar>
+      <h2 class="text-3xl"><%= config.author %></h2>
+      <h2 class="text-2xl"><%= config.description %></h2>
+    </div>
+    <br/>
+    <ul class="flex justify-between items-center">
+      <li class="text-3xl">
+        <a rel="nofollow" href="<%= config.root %>archives/"><i class="fa fa-archive"></i></a>
+        <a rel="nofollow" href="<%= config.root %>archives/" class=""><%= site.posts.length %></a>
+      </li>
+      <li class="text-3xl">
+        <a rel="nofollow" href="<%= config.root %>categories/"><i class="fa fa-th-large"></i></a>
+        <a rel="nofollow" href="<%= config.root %>categories/" class=""><%= site.categories.length %></a>
+      </li>
+      <li class="text-3xl">
+        <a rel="nofollow" href="<%= config.root %>tags/"><i class="fa fa-tags"></i></a>
+        <a rel="nofollow" href="<%= config.root %>tags/" class=""><%= site.tags.length %></a>
+      </li>
+      </ul>
+    <template #footer>
+      <ul class="social-links">
+        <% for (let name in theme.social_links) { %>
+          <% let [url, icon] = theme.social_links[name].split('||').map(item => item.trim()); %>
+          <li class="social-links-item">
+              <a href="<%= url %>" class="social-links-link">
+                  <i class="fa <%= icon %>" aria-hidden="true"></i>
+                  <p class="hover-underline"><%= name %></p>
+              </a>
+          </li>
+      <% } %>
+      </ul> 
+      </template>
+</el-card>

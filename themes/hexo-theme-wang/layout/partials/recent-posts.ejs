@@ -1,0 +1,35 @@
+<% if (page.posts.length > 0) { %>
+  <el-container id="recent-posts">
+    <% page.posts.sort('date', -1).limit(config.per_page).each(post => { %>
+      <el-card class="bg-stone-800 text-stone-100 md-10 mt-10 recent-post">
+          <div class="card-header">
+            <h1 class="text-center text-3xl"><%=post.title%></h1>
+            <br/>
+             <div class="post-meta flex justify-center">
+                <span class="post-time text-xl">
+                    <i class="fa fa-clock night text-xl"></i>
+                    <time datetime="<%- date(post.date, 'YYYY-MM-DD HH:mm:ss') %>" class="night"><%- date(post.date, 'YYYY-MM-DD HH:mm:ss') %></p>
+                </span>
+                    <p style="margin: 0 10px;" class="night text-xl">||</p>
+                <span class="post-time text-xl">
+                    <i class="fa fa-refresh night text-xl"></i>
+                    <time datetime="<%- date(post.updated, 'YYYY-MM-DD HH:mm:ss') %>" class="night"><%- date(post.updated, 'YYYY-MM-DD HH:mm:ss') %></p>
+                </span>
+            </div>
+          </div>
+          <br/>
+        <div class="card-body">
+          <div style="text-align: center; justify-content: center; align-items: center;">
+          <%- post.excerpt%>
+          </div>
+        </div>
+        <br/>
+        <div class="flex justify-center m-auto">
+        <el-button  class="" color="#15151" type="primary" size="large" round="true" tag="a" href="<%- url_for(post.path)%>" hreflang="<%- config.language %>" title="<%- post.title %>" rel="nofollow" data-description="<%- post.title %>">
+          <%= __('index.read_more')%>
+        </el-button>
+        </div>
+      </el-card>
+    <% }); %>
+    </el-container>
+<% } %>

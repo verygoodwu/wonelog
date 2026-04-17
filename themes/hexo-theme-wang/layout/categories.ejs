@@ -1,0 +1,15 @@
+<div id="category">
+  <div>
+  <h1 style="margin:auto; text-align:center;"><%= __('menu.categories') %></h1>
+  </div>
+  <div class="category-clouds box night">
+    <%- list_categories({
+      order: 1,                // 按名称降序排列
+      show_count: true,         // 显示每个分类的文章数量
+      style: 'list',            // 使用无序列表显示
+      separator: ', ',          // 分隔符（仅在 style 不是 list 时有用）
+      class: 'category-list',   // 列表的 class 名称 // 将分类名称转换为大写
+    }) %>
+  </div>
+</div>
+

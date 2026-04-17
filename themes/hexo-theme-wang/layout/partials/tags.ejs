@@ -1,0 +1,11 @@
+<div class="page-container tags-page">
+    <h1><%= __('Tags') %></h1>
+    <div class="tags-cloud">
+        <% site.tags.forEach(function(tag) { %>
+            <a href="<%= url_for(tag.path) %>" class="tag-item" style="font-size: <%= 0.8 + (tag.length / site.tags.length)%>em;" aria-label="标签: <%= tag.name %>">
+                <%= tag.name %>
+                <small>(<%= tag.length %>)</small>
+            </a>
+        <% }) %>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+<div class="ccbyncsa">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="copyright">
+                    <div class="author">
+                        <p><%= __('post.author')%></p>
+                        <p><%= config.author%></p>
+                    </div>
+                    <div class="title">
+                        <p><%= __('post.title')%></p>
+                        <p><%= page.title%></p>
+                    </div>
+                        <div class="publish">
+                            <p><%= __('post.published') %></p>
+                            <p><%= date(page.date, 'YYYY-MM-DD') %></p>
+                        </div>
+                    <div class="ccbyncsa-icon">
+                        <p><%= __('post.license')%></p>
+                        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                        <p class="ccbyncsa-icon-imgs" style="display: flex;">
+                        <img src="<%= url_for('images/cc.svg')%>" alt="cc">
+                        <img src="<%= url_for('images/by.svg')%>" alt="by">
+                        <img src="<%= url_for('images/nc.svg')%>" alt="nc">
+                        <img src="<%= url_for('images/sa.svg')%>" alt="sa">
+                        </p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

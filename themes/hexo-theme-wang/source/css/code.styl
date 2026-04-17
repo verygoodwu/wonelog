@@ -1,0 +1,206 @@
+// 代码块基础样式 - 优化
+pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1.2em;
+  font-family: 'JetBrains Mono', Consolas, Monaco, 'Andale Mono', monospace !important;
+  font-size: 0.92em;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+}
+
+code.hljs {
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-size: 0.92em;
+}
+
+// 代码框主结构 - 现代化外观
+figure.highlight {
+  margin: 1.8em 0;
+  position: relative;
+  font-size: 0.92em;
+  border-radius: 12px;
+  background: rgba(30, 30, 40, 0.95); // 调整背景色
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.3),
+    0 0 10px rgba(100, 100, 255, 0.1); // 双层阴影
+  border: 1px solid rgba(100, 100, 255, 0.15);
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  overflow: hidden;
+
+  &:hover {
+    box-shadow:
+      0 12px 35px rgba(0, 0, 0, 0.4),
+      0 0 15px rgba(100, 100, 255, 0.15);
+    transform: translateY(-2px);
+  }
+
+  // 表格结构
+  table {
+    width: 100%;
+    border-spacing: 0;
+    margin: 0;
+    border: none;
+  }
+
+  td {
+    padding: 0;
+    border: none;
+  }
+
+  // 行号区域 - 改善对比度
+  .gutter {
+    width: 3.2em;
+    user-select: none;
+    background: rgba(20, 20, 30, 0.7); // 加深背景色
+
+    pre {
+      text-align: right;
+      padding: 1em 0.7em 1em 0;
+      margin: 0;
+      color: rgba(169, 183, 198, 0.6); // 提高可读性
+      font-family: 'JetBrains Mono', Consolas, Monaco, monospace !important;
+    }
+
+    // 删除垂直分隔线
+    &::after {
+      display: none; // 隐藏竖线
+    }
+  }
+
+  // 代码区域 - 添加内边距
+  .code {
+    width: calc(100% - 3.2em);
+
+    pre {
+      margin: 0;
+      padding: 1em 1.5em;
+      padding-left: 0.5em; // 添加左侧内边距
+      font-family: 'JetBrains Mono', Consolas, Monaco, monospace !important;
+    }
+  }
+}
+
+// 语言标签 - 增强显示效果
+figure.highlight::before {
+  content: attr(data-lang);
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #e4e4e4;
+  background: rgba(60, 60, 120, 0.7); // 调整为蓝紫色调
+  padding: 0.3em 0.8em;
+  border-radius: 0 0 8px 0;
+  font-size: 0.75em;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+// 复制按钮容器
+.copy-btn-wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 5;
+}
+
+// 复制按钮 - 现代化设计
+.copy-btn {
+  background: rgba(80, 80, 180, 0.3); // 更加蓝紫的基调
+  border: 1px solid rgba(100, 100, 255, 0.25);
+  color: #e0e0ff;
+  padding: 0.35em 0.8em;
+  border-radius: 0 10px 0 10px;
+  font-size: 0.8em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  outline: none;
+
+  &:hover {
+    background: rgba(100, 100, 200, 0.5);
+    color: white;
+    box-shadow: 0 0 10px rgba(100, 100, 255, 0.2);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+/* Monokai风格代码高亮 */
+.highlight {
+  color: #f8f8f2;
+
+  .comment, .quote {
+    color: #75715e;
+    font-style: italic;
+  }
+
+  .keyword, .selector-tag, .tag {
+    color: #f92672;
+  }
+
+  .builtin, .name, .built_in, .function, .attr {
+    color: #a6e22e;
+  }
+
+  .string, .title, .section, .attribute, .symbol, .literal {
+    color: #e6db74;
+  }
+
+  .number, .params {
+    color: #ae81ff;
+  }
+
+  .type, .class, .class .title {
+    color: #66d9ef;
+    font-style: italic;
+  }
+
+  .variable, .template-variable {
+    color: #fd971f;
+  }
+
+  .regexp, .addition, .link {
+    color: #a6e22e;
+  }
+
+  .deletion {
+    color: #f92672;
+  }
+
+  .meta {
+    color: #75715e;
+  }
+}
+
+// 移动端优化
+@media (max-width: 768px) {
+  figure.highlight {
+    font-size: 0.85em;
+
+    .gutter {
+      width: 2.2em;
+
+      &::after {
+        left: 2.2em;
+      }
+
+      pre {
+        padding-right: 0.3em;
+      }
+    }
+
+    .code {
+      width: calc(100% - 2.2em);
+
+      pre {
+        padding: 1em 0.8em;
+      }
+    }
+  }
+}

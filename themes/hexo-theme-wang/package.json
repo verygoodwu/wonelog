@@ -1,0 +1,27 @@
+{
+  "name": "hexo-theme-wang",
+  "version": "3.8.1",
+  "description": "a hexo theme minimalism",
+  "keywords": [
+    "wang",
+    "hexo",
+    "theme",
+    "minimalism"
+  ],
+  "author": "xingwangzhe",
+  "licenses": [
+    {
+      "type": "AGPL3.0",
+      "url": "https://github.com/xingwangzhe/hexo-theme-wang/blob/main/LICENSE"
+    },
+    {
+      "type": "MIT",
+      "url": "https://github.com/xingwangzhe/hexo-theme-wang/blob/main/MIT_LICENSE"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xingwangzhe/hexo-theme-wang.git"
+  },
+  "homepage": "https://github.com/xingwangzhe/hexo-theme-wang"
+}

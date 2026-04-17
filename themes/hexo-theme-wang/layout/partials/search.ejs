@@ -1,0 +1,54 @@
+<div id="search-modal" class="search-modal">
+    <div class="search-modal-content">
+        <div class="search-header">
+            <input type="text" id="search-input" placeholder="<%= __('search.placeholder') %>" aria-label="<%= __('search.placeholder') %>">
+            <button class="search-close-btn" aria-label="<%= __('search.close') %>">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div id="search-results" class="search-results">
+            <!-- 搜索结果将通过JavaScript动态插入 -->
+        </div>
+    </div>
+</div>
+<div class="search-overlay"></div>
+
+<!-- 将翻译文本注入到JavaScript -->
+<script>
+    window.WANG_THEME = window.WANG_THEME || {};
+    window.WANG_THEME.i18n = {
+        search: {
+            noResults: "<%= __('search.no_results') %>",
+            loading: "<%= __('search.loading') %>",
+            placeholder: "<%= __('search.placeholder') %>",
+            error_loading: "<%= __('search.error_loading') || '加载搜索数据失败' %>",
+            close: "<%= __('search.close') || 'Close' %>",
+            shortcut_tip: "<%= __('search.shortcut_tip') || '按 ESC 关闭' %>"
+        }
+    };
+    
+    // 添加事件监听器，确保搜索框获得焦点时导航栏保持显示
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('search-input');
+        const header = document.querySelector('header');
+        
+        if (searchInput && header) {
+            // 当搜索框获得焦点时
+            searchInput.addEventListener('focus', function() {
+                header.classList.add('show-header');
+                header.classList.add('search-active');
+            });
+            
+            // 当搜索框有内容时
+            searchInput.addEventListener('input', function() {
+                if (this.value.trim() !== '') {
+                    header.classList.add('show-header');
+                    header.classList.add('search-active');
+                }
+            });
+        }
+    });
+</script>

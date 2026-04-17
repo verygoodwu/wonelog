@@ -1,0 +1,39 @@
+Home: 首頁
+Archives: 檔案
+Categories: 分類
+Tags: 標籤
+About: 關於
+Links: 連結
+PoweredBy: 由 Hexo 提供動力
+BuiltWith: 使用 Wang 主題建置
+RSS: RSS
+Travelling: 开往
+social_links: 聯絡我
+searchs: 搜尋
+
+paginator:
+  prev: 上一頁
+  next: 下一頁
+search:
+  no_results: 找不到結果
+  loading: 載入中...
+  placeholder: 搜尋文章...
+  results: 搜尋結果
+  error_loading: 載入搜尋數據失敗
+  close: 關閉
+  shortcut_tip: 按 ESC 關閉
+  toggle_search: 打開搜尋
+post:
+  category: 分類
+  posted_on: 發表於
+  read_more: 閱讀更多
+  word_count: 字數
+  reading_time: 閱讀時間
+  minutes: 分
+  last_updated: 最後更新
+  prev_post: 上一篇文章
+  next_post: 下一篇文章
+  license: 授權協議
+  author: 作者
+  title: 標題
+  published: 發佈於

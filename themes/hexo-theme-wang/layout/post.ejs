@@ -1,0 +1,42 @@
+<%- partial('partials/sidebar-left.ejs') %>
+<div class="post-container">
+  <article class="post">
+    <h1 class="post-title"><%- page.title %></h1>
+
+    <div class="post-meta">
+      <span class="post-date"><%- __('post.posted_on') %> <time datetime="<%= page.date.toISOString() %>"><%= date(page.date, 'YYYY-MM-DD') %></time></span>
+      <% if (page.categories && page.categories.length) { %>
+        <span class="post-categories">
+          <%- __('post.category') %>：<%- list_categories(page.categories, { show_count: false, style: 'link' }) %>
+        </span>
+      <% } %>
+      <% if (page.updated && page.updated !== page.date) { %>
+        <span class="post-updated">
+          <%- __('post.last_updated') %> <time datetime="<%= page.updated.toISOString() %>"><%= date(page.updated, 'YYYY-MM-DD') %></time>
+        </span>
+      <% } %>
+      <span style="margin-left:10px;">👁<span id="busuanzi_value_page_pv"></span></span>
+    </div>
+    <div class="post-content">
+      <%- page.content %>
+    </div>
+  </article>
+  <%- partial('partials/ccbyncsa.ejs')%>
+  <nav class="post-pagination">
+    <% if (page.next) { %>
+      <div class="post-prev">
+        <span class="nav-label"><%- __('post.prev_post') %></span>
+        <a href="<%- url_for(page.next.path) %>"><%- page.next.title %></a>
+      </div>
+    <% } %>
+    <% if (page.prev) { %>
+      <div class="post-next">
+        <span class="nav-label"><%- __('post.next_post') %></span>
+        <a href="<%- url_for(page.prev.path) %>"><%- page.prev.title %></a>
+      </div>
+    <% } %>
+  </nav>
+  <%- partial('partials/comment.ejs')%>
+</div>
+<%- js('js/copy.js')%>
+<%- partial('partials/sidebar-right.ejs') %>

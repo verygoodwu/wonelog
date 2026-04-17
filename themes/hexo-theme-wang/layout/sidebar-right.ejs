@@ -1,0 +1,94 @@
+<el-card class="w-1/6 fixed right-0 bg-stone-800 text-stone-200 sidebar" style=" max-height: 850px; overflow-y: auto;">
+    <template #header>
+      <h1><%= page.title %></h1>
+    </template>
+      <% if(theme.ipshow.enable){%>
+        <div class="where is your ip">
+      <h3 class="ipshow"><%= __('sidebar-right.ip_show') %></h3>
+      <img class="nofancybox" src="https://tool.lu/netcard/" rel="https://tool.lu/ip/" alt="show your ip">
+    </div>
+      <%}%>
+      <%if(theme.timeshow.enable){%>
+        <div class="time">  
+        <h3 class="timetitle"><%= __('sidebar-right.time_show') %></h3>
+        <div class="timeshow" id="currentDateTime"></div>  
+    </div>
+    <%}%>
+    <template #footer>
+      <% if(is_post()) {%>
+        <div class="thispost-tags-container">
+          <i class="fa fa-tags"></i>
+          <br>
+          <div class="thispost-tags">
+            <% page.tags.each(function(tag) { %>
+            <a class="thispost-tag hover-underline"km href="<%= url_for('tags/' + tag.name) %>">#<%= tag.name %></a>
+            <% }); %>
+          </div>
+        </div>
+        <div class="thispost-categories-container">
+          <i class="fa fa-th-large"></i>
+          <br>
+          <div class="thispost-categories">
+            <% page.categories.each(function(category) { %>
+            <a class="thispost-category hover-underline" href="<%= url_for('categories/' + category.name) %>"><%= category.name %></a>
+            <% }); %>
+          </div>
+        </div>
+        <%}%>
+           <div>
+            <%- toc(page.content, {
+          class: 'toc', // 目录的 CSS 类名
+          class_item: 'toc-item', // 目录元素的 CSS 类名
+          class_link: 'toc-link', // 目录内链接的 CSS 类名
+          class_text: 'toc-text', // 目录链接内文本的 CSS 类名
+          class_child: 'toc-child', // 子目录的 CSS 类名
+          class_number: 'toc-number', // 目录序号的 CSS 类名
+          class_level: 'toc-level', // 目录层级的 CSS 类名前缀
+          list_number: true, // 是否显示编号
+          max_depth: 6, // 生成 TOC 的最大深度
+          min_depth: 1, // 生成 TOC 的最小深度
+          max_items: Infinity // 生成的 toc 的最大项目数
+        }) %>
+          </div>
+    </template>
+</el-card>
+<script v-pre>
+document.addEventListener('DOMContentLoaded', function() {
+        // 创建一个新的Date对象，它将包含当前的本地时间
+        const now = new Date();
+    
+        // 定义一个函数来格式化日期和时间
+        function formatDateTime(now, format) {
+            const year = now.getFullYear();
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const day = now.getDate().toString().padStart(2, '0');
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+    
+            // 替换格式字符串中的占位符
+            return format.replace(/YYYY/g, year)
+                         .replace(/MM/g, month)
+                         .replace(/DD/g, day)
+                         .replace(/HH/g, hours)
+                         .replace(/mm/g, minutes)
+                         .replace(/ss/g, seconds);
+        }
+    
+        // 从配置中获取时间格式
+        const timeFormat = "<%= theme.timeshow.format %>";
+    
+        // 更新时间的函数
+        function updateTime() {
+            const now = new Date();
+            const formattedDateTime = formatDateTime(now, timeFormat);
+            document.getElementById('currentDateTime').textContent = formattedDateTime;
+        }
+    
+        // 初始调用更新时间函数
+        updateTime();
+    
+        // 每1000毫秒（1秒）调用一次updateTime函数，更新时间
+        setInterval(updateTime, 1000);
+    });
+</script>

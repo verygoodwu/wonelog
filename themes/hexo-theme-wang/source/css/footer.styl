@@ -1,0 +1,47 @@
+footer {
+    bottom: 0;
+    width: 100%;
+    padding: 1rem 0;
+    text-align: center;
+    margin-top: auto; // 确保在页面底部
+    
+    .footer-links {
+        margin: 1rem auto;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        
+        a {
+            text-decoration: none;
+            transition: opacity 0.3s;
+            
+            &:hover {
+                opacity: 0.8;
+            }
+            
+            img {
+                height: 30px;
+                width: auto;
+                vertical-align: middle;
+            }
+        }
+    }
+    
+    .footer-text-links {
+        margin-top: 1rem;
+        
+        a {
+            color: #666;
+            text-decoration: none;
+            margin: 0 0.5rem;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+            
+            &:hover {
+                color: #333;
+                text-decoration: underline;
+            }
+        }
+    }
+}

@@ -1,0 +1,21 @@
+
+<div id="tag">
+  <div>
+    <h1 style="margin:auto; text-align:center;"><%= __('menu.tags')  %></h1>
+    </div>
+  <div class="tag-clouds box night">
+    <%- tagcloud({
+        min_font: 15,         // 最小字体尺寸
+        max_font: 36,         // 最大字体尺寸
+        unit: 'px',           // 字体尺寸的单位
+        amount: 0,           // 标签总量，设置为 30 表示最多显示 30 个标签
+        orderby: 'name',      // 标签排列方式，可以是 'name' 或 'length'
+        order: 1,             // 排列顺序，1 为升序，-1 为降序
+        color: false,          // 是否使用颜色
+        start_color: '#ff0000', // 开始的颜色
+        end_color: '#0000ff',   // 结束的颜色
+        class: 'tag-cloud',   // 标签云的类名
+        show_count: false,
+      }) %>
+  </div>
+</div>

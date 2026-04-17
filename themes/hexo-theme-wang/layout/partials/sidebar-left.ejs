@@ -1,0 +1,23 @@
+<aside class="sidebar-container sidebar-left">
+    <div class="sidebar-bg">
+        <h2 class="site-title"><%- config.title %></h2>
+        <img class="avatar <%= theme.avatar.isround ? 'avatar-round' : '' %>" src="<%- url_for(theme.avatar.src) %>" style="width:50px;" alt="网站头像">
+        <h2 class="site-author"><%- config.author %></h2>
+        <h3 class="site-subtitle"><%- config.subtitle %></h3>
+    </div>
+    <div class="sidebar-bg">
+        <ul class="social_links">
+            <% for (let key in theme.social_links) { %>
+                <li>
+                    <a href="<%= theme.social_links[key].split('||')[0].trim() %>" aria-label="<%= key %>的链接">
+                        <% if (theme.social_links[key].split('||')[1]) { %>
+                            <div style="display: flex; margin-left: auto; margin-left: auto; justify-content: center;">
+                                <img src="<%= url_for('images/social_links/') %><%= theme.social_links[key].split('||')[1].trim() %>.svg" class="icon" alt="<%= key %>的图标"><p><%= key%></p>
+                            </div>
+                        <% } %>
+                    </a>
+                </li>
+            <% } %>
+        </ul>
+    </div>
+</aside>
