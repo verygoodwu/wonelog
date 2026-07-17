@@ -1,0 +1,21 @@
+{
+    "siteName":  "Wonelog",
+    "avatar":  "",
+    "nickname":  "Your Name",
+    "greeting":  "Hello",
+    "subtitle":  "记录、思考与分享",
+    "description":  [
+                        "这是一个可以通过桌面客户端维护的个人博客。"
+                    ],
+    "bio":  [
+                "在这里介绍你自己。",
+                "分享你的技术、项目与生活。"
+            ],
+    "email":  "",
+    "icp":  "",
+    "startDate":  "2026-01-01T00:00:00+08:00",
+    "socials":  {
+                    "github":  "",
+                    "rss":  "/rss.xml"
+                }
+}

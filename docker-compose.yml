@@ -1,0 +1,19 @@
+services:
+  wonelog-server:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5000:5000"
+    env_file:
+      - .env
+    volumes:
+      - ./data/posts:/app/posts
+      - ./data/images:/app/images
+      - ./data/versions:/app/versions
+      - ./data/config.json:/app/config.json
+      - ./data/links.json:/app/links.json
+      - ./data/cities.json:/app/cities.json
+      - ./data/projects.json:/app/projects.json
+      - ./data/about_content.json:/app/about_content.json

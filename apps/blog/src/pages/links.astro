@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import linksData from '../content/links.json';
+
+const links = linksData.links ?? [];
+---
+<BaseLayout title="友链 - Wonelog" description="Wonelog 友链">
+  <section class="page-title">
+    <h1>&#x53CB;&#x94FE;</h1>
+    <p>&#x4E00;&#x4E9B;&#x503C;&#x5F97;&#x5E38;&#x53BB;&#x770B;&#x770B;&#x7684;&#x5730;&#x65B9;&#x3002;</p>
+  </section>
+
+  <section class="link-grid">
+    {links.map((link) => (
+      <a class="link-card" href={link.url} target="_blank" rel="noreferrer">
+        {link.avatar && <img src={link.avatar} alt={link.name} loading="lazy" decoding="async" />}
+        <div>
+          <h2>{link.name}</h2>
+          <p>{link.desc}</p>
+        </div>
+      </a>
+    ))}
+  </section>
+</BaseLayout>

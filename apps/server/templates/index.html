@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wonelog 管理后台</title>
+    <style>
+        :root {
+            --bg: #f4f6f8;
+            --surface: #ffffff;
+            --surface-soft: #f8fafc;
+            --border: #dfe5ec;
+            --border-strong: #c8d2df;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --faint: #9ca3af;
+            --primary: #2563eb;
+            --primary-strong: #1d4ed8;
+            --primary-soft: #eff6ff;
+            --success: #0f766e;
+            --success-soft: #ecfdf5;
+            --danger: #dc2626;
+            --danger-soft: #fef2f2;
+            --warning-soft: #fffbeb;
+            --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+            --shadow-md: 0 12px 28px rgba(15, 23, 42, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: rgba(255, 255, 255, 0.94);
+            color: var(--text);
+            padding: 16px 28px;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+        .header h1 { font-size: 1.35em; font-weight: 700; letter-spacing: 0; }
+        .header p { color: var(--muted); margin-top: 2px; font-size: 0.9em; }
+
+        .container { max-width: 1360px; margin: 0 auto; padding: 24px; }
+        .workspace { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 24px; align-items: start; }
+
+        .tabs {
+            position: sticky;
+            top: 88px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 0;
+            padding: 10px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+        }
+        .tab {
+            width: 100%;
+            padding: 11px 12px;
+            background: transparent;
+            color: var(--muted);
+            border: 1px solid transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 600;
+            text-align: left;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
+            box-shadow: none;
+        }
+        .tab:hover { background: var(--surface-soft); color: var(--text); transform: none; box-shadow: none; }
+        .tab.active { background: var(--primary-soft); color: var(--primary-strong); border-color: #bfdbfe; }
+
+        .content-area { min-width: 0; }
+        .tab-content { display: grid; gap: 18px; }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 0;
+            box-shadow: var(--shadow-sm);
+        }
+        .card h2 {
+            color: var(--text);
+            margin-bottom: 16px;
+            font-size: 1.1em;
+            font-weight: 700;
+            border-bottom: 0;
+            padding-bottom: 0;
+            display: block;
+        }
+        .card > p { color: var(--muted); }
+
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #374151;
+            font-size: 0.9em;
+            font-weight: 650;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-strong);
+            border-radius: 6px;
+            background: #fff;
+            color: var(--text);
+            font-size: 0.96em;
+            transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+        small { color: var(--muted) !important; }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 38px;
+            padding: 9px 14px;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.92em;
+            font-weight: 650;
+            transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+        }
+        .btn:hover { transform: none; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-strong); box-shadow: none; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #115e59; box-shadow: none; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-danger:hover { background: #b91c1c; box-shadow: none; }
+        .btn-secondary { background: var(--surface); color: var(--text); border-color: var(--border-strong); }
+        .btn-secondary:hover { background: var(--surface-soft); }
+        .btn-warning { background: #f59e0b; color: white; }
+        .btn-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+        .btn-sm { min-height: 30px; padding: 5px 10px; font-size: 0.82em; }
+
+        .city-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin-top: 12px; }
+        .city-card, .version-item, .module-item, .article-item {
+            background: var(--surface-soft);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--primary);
+            border-radius: 8px;
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .city-card { padding: 16px; }
+        .city-card.live { border-left-color: var(--success); }
+        .city-card:hover, .version-item:hover, .module-item:hover, .article-item:hover { background: #fff; border-color: var(--border-strong); }
+        .city-card h3 { color: var(--text); margin-bottom: 6px; font-size: 1em; }
+        .city-card .coords { color: var(--muted); font-size: 0.86em; margin-bottom: 6px; }
+        .city-card .desc { color: var(--muted); font-size: 0.9em; }
+        .city-card .type { display: inline-flex; padding: 2px 8px; border-radius: 999px; font-size: 0.78em; margin-bottom: 10px; font-weight: 650; }
+        .city-card .type.live { background: var(--success-soft); color: var(--success); }
+        .city-card .type.travel { background: var(--warning-soft); color: #92400e; }
+
+        .article-list { display: flex; flex-direction: column; gap: 10px; }
+        .article-item { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px 16px; }
+        .article-item h3 { color: var(--text); font-size: 1em; margin-bottom: 3px; }
+        .article-item .date { color: var(--muted); font-size: 0.86em; }
+        .article-item .actions { display: flex; gap: 8px; flex-shrink: 0; }
+        .article-item .actions button, .article-item .edit-btn, .article-item .delete-btn, .version-actions button {
+            padding: 6px 10px;
+            border: 1px solid var(--border-strong);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.82em;
+            font-weight: 650;
+            background: #fff;
+            color: var(--text);
+        }
+        .article-item .edit-btn { color: var(--primary-strong); border-color: #bfdbfe; background: var(--primary-soft); }
+        .article-item .delete-btn { color: var(--danger); border-color: #fecaca; background: var(--danger-soft); }
+
+        .editor-container { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.52); z-index: 1000; padding: 24px; }
+        .editor-container.show { display: flex; justify-content: center; align-items: center; }
+        .editor-box { background: white; border-radius: 8px; width: min(960px, 100%); max-height: 92vh; overflow-y: auto; padding: 24px; box-shadow: var(--shadow-md); }
+        .editor-box h2 { margin-bottom: 16px; font-size: 1.15em; }
+        .editor-box textarea { width: 100%; height: 400px; font-family: 'Monaco', 'Menlo', monospace; padding: 14px; border: 1px solid var(--border-strong); border-radius: 6px; resize: vertical; }
+        .editor-box .btn-group { margin-top: 14px; }
+
+        .publish-section { text-align: left; padding: 24px; }
+        .publish-btn {
+            width: 100%;
+            padding: 14px 22px;
+            font-size: 1em;
+            font-weight: 750;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.15s, box-shadow 0.15s;
+        }
+        .publish-btn:hover { background: #115e59; transform: none; box-shadow: 0 8px 20px rgba(15, 118, 110, 0.18); }
+        .publish-btn:disabled { opacity: 0.62; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+
+        .publish-progress { margin-bottom: 18px; padding: 14px; background: var(--surface-soft); border: 1px solid var(--border); border-radius: 8px; }
+        .publish-progress.hidden { display: none; }
+        .progress-steps { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; margin-bottom: 12px; }
+        .progress-step { min-width: 0; padding: 8px 6px; text-align: center; font-size: 0.76em; border-radius: 6px; background: #fff; color: var(--faint); transition: all 0.2s; border: 1px solid var(--border); }
+        .progress-step.active { background: var(--primary-soft); color: var(--primary-strong); border-color: #bfdbfe; font-weight: 700; }
+        .progress-step.done { background: var(--success); color: white; border-color: var(--success); }
+        .progress-step.error { background: var(--danger-soft); color: var(--danger); border-color: #fecaca; }
+        .progress-bar-container { width: 100%; height: 8px; background: #e5e7eb; border-radius: 999px; overflow: hidden; margin-bottom: 8px; }
+        .progress-bar-fill { height: 100%; width: 0%; background: var(--success); border-radius: 999px; transition: width 0.4s ease; }
+        .progress-status { text-align: center; font-size: 0.86em; color: var(--muted); min-height: 1.2em; }
+        .progress-status.active { color: var(--primary-strong); font-weight: 650; }
+        .progress-status.error { color: var(--danger); }
+        .progress-status.done { color: var(--success); font-weight: 700; }
+
+        .version-list { display: flex; flex-direction: column; gap: 10px; }
+        .version-item { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px 16px; }
+        .version-item.current { border-left-color: var(--success); background: var(--success-soft); }
+        .version-info { flex: 1; min-width: 0; }
+        .version-info .timestamp { font-weight: 700; color: var(--text); font-size: 0.98em; }
+        .version-info .meta { color: var(--muted); font-size: 0.84em; margin-top: 4px; }
+        .version-info .stats { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; font-size: 0.8em; color: var(--muted); }
+        .version-info .stats span { display: flex; align-items: center; gap: 4px; }
+        .version-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+        .module-list { display: flex; flex-direction: column; gap: 10px; }
+        .module-item { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px 16px; }
+        .module-item h4 { color: var(--text); margin: 0; font-size: 0.98em; }
+        .module-item .module-actions { display: flex; gap: 8px; align-items: center; }
+        .module-toggle { width: 42px; height: 22px; border-radius: 999px; background: #cbd5e1; cursor: pointer; position: relative; transition: background 0.2s; }
+        .module-toggle.active { background: var(--success); }
+        .module-toggle::after { content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%; background: white; top: 2px; left: 2px; transition: left 0.2s; box-shadow: var(--shadow-sm); }
+        .module-toggle.active::after { left: 22px; }
+
+        .toast { position: fixed; bottom: 24px; right: 24px; max-width: min(420px, calc(100vw - 48px)); padding: 12px 16px; background: #111827; color: white; border-radius: 8px; z-index: 2000; animation: slideIn 0.2s ease; box-shadow: var(--shadow-md); }
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--danger); }
+        @keyframes slideIn { from { transform: translateY(12px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .hidden { display: none !important; }
+        .preview-area { background: #0f172a; color: #dbeafe; padding: 18px; border-radius: 8px; margin-top: 14px; white-space: pre-wrap; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.88em; overflow: auto; }
+        .about-module-edit { background: var(--surface-soft); padding: 18px; border: 1px solid var(--border); border-radius: 8px; margin-top: 12px; }
+
+        @media (max-width: 900px) {
+            .container { padding: 16px; }
+            .workspace { grid-template-columns: 1fr; gap: 16px; }
+            .tabs { position: static; flex-direction: row; overflow-x: auto; padding: 8px; }
+            .tab { width: auto; white-space: nowrap; }
+            .card { padding: 18px; }
+            .progress-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 640px) {
+            .header { padding: 14px 16px; }
+            .header h1 { font-size: 1.15em; }
+            .article-item, .version-item, .module-item { align-items: flex-start; flex-direction: column; }
+            .article-item .actions, .version-actions { width: 100%; }
+            .article-item .actions button, .version-actions button { flex: 1; }
+            .btn-group { flex-direction: column; }
+            .btn, .publish-btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎯 Wonelog 管理后台</h1>
+        <p>管理你的博客 - 内容管理 + 版本控制</p>
+    </div>
+    
+    <div class="container">
+        <div class="workspace">
+            <div class="tabs">
+            <button class="tab active" onclick="showTab('profile')">👤 个人信息</button>
+            <button class="tab" onclick="showTab('cities')">✈️ 足迹城市</button>
+            <button class="tab" onclick="showTab('links')">🔗 友链管理</button>
+            <button class="tab" onclick="showTab('articles')">📝 文章管理</button>
+            <button class="tab" onclick="showTab('about-content')">📄 关于内容</button>
+            <button class="tab" onclick="showTab('versions')">📦 版本管理</button>
+            <button class="tab" onclick="showTab('publish')">🚀 发布</button>
+        </div>
+        
+        <!-- 个人信息 -->
+                    <main class="content-area">
+        <div id="tab-profile" class="tab-content">
+            <div class="card">
+                <h2>个人信息</h2>
+                <div class="form-group">
+                    <label>头像</label>
+                    <div style="display: flex; gap: 10px; align-items: flex-start;">
+                        <div style="flex: 1;">
+                            <input type="text" id="avatar" placeholder="头像图片URL或点击上传" style="flex: 1;">
+                            <small style="color:#888;display:block;margin-top:5px;">建议尺寸: 180x180 或 200x200，正方形</small>
+                        </div>
+                        <label class="btn btn-secondary" style="cursor: pointer; padding: 10px 16px;">
+                            📷 上传头像
+                            <input type="file" accept="image/*" onchange="uploadAvatar(this)" style="display:none;">
+                        </label>
+                    </div>
+                    <div id="avatar-preview" style="margin-top: 10px; display: none;">
+                        <img id="avatar-img" style="width: 100px; height: 100px; border-radius: 12px; object-fit: cover; border: 1px solid #ddd;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>昵称</label>
+                    <input type="text" id="nickname" placeholder="你的昵称">
+                </div>
+                <div class="form-group">
+                    <label>首页标题</label>
+                    <input type="text" id="greeting" placeholder="如：Hello">
+                    <small style="color:#888;">浏览器标签页和首页大标题</small>
+                </div>
+                <div class="form-group">
+                    <label>副标题</label>
+                    <input type="text" id="subtitle" placeholder="如：游戏 QA · 记录 · 折腾">
+                </div>
+                <div class="form-group">
+                    <label>个人简介</label>
+                    <textarea id="description" rows="3" placeholder="首页显示的个人简介，支持换行（换行会转为<br/>）"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>简介</label>
+                    <textarea id="bio" rows="4" placeholder="关于我的描述，每行一条（对应关于页每行的圆点）"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>邮箱</label>
+                    <input type="email" id="email" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label>GitHub 用户名</label>
+                    <input type="text" id="github" placeholder="username">
+                </div>
+                <button class="btn btn-primary" onclick="saveProfile()">保存个人信息</button>
+            </div>
+        </div>
+        
+        <!-- 足迹城市 -->
+        <div id="tab-cities" class="tab-content hidden">
+            <div class="card">
+                <h2>添加城市</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>城市名</label>
+                        <input type="text" id="city-name" placeholder="如：北京" oninput="autoFillCoords()">
+                    </div>
+                    <div class="form-group">
+                        <label>纬度</label>
+                        <input type="text" id="city-lat" placeholder="自动填充">
+                    </div>
+                    <div class="form-group">
+                        <label>经度</label>
+                        <input type="text" id="city-lon" placeholder="自动填充">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>类型</label>
+                    <select id="city-type">
+                        <option value="travel">旅行</option>
+                        <option value="live">居住</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>描述</label>
+                    <input type="text" id="city-desc" placeholder="关于这个城市的一句话">
+                </div>
+                <button class="btn btn-primary" onclick="addCity()">添加城市</button>
+            </div>
+            
+            <div class="card">
+                <h2>城市列表</h2>
+                <div id="city-list" class="city-grid"></div>
+            </div>
+        </div>
+
+        <!-- 友链管理 -->
+        <div id="tab-links" class="tab-content hidden">
+            <div class="card">
+                <h2>添加友链</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>名称</label>
+                        <input type="text" id="link-name" placeholder="如：DIYgod">
+                    </div>
+                    <div class="form-group">
+                        <label>链接</label>
+                        <input type="text" id="link-url" placeholder="https://example.com">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>描述</label>
+                    <input type="text" id="link-desc" placeholder="一句话简介">
+                </div>
+                <div class="form-group">
+                    <label>头像</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="text" id="link-avatar" placeholder="头像URL或点击上传" style="flex: 1;">
+                        <label class="btn btn-secondary" style="cursor: pointer; padding: 10px 16px; white-space: nowrap;">
+                            📷 上传头像
+                            <input type="file" accept="image/*" onchange="uploadLinkAvatar(this)" style="display:none;">
+                        </label>
+                    </div>
+                    <div id="link-avatar-preview" style="margin-top: 8px; display: none;">
+                        <img id="link-avatar-img" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid #ddd;">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="addLink()">添加友链</button>
+            </div>
+
+            <div class="card">
+                <h2>友链列表</h2>
+                <div id="link-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+            </div>
+        </div>
+
+        <!-- 文章管理 -->
+        <div id="tab-articles" class="tab-content hidden">
+            <div class="card">
+                <h2>文章管理</h2>
+                
+                <div class="btn-group" style="margin-bottom: 20px;">
+                    <button class="btn btn-primary" onclick="newArticle()">✏️ 新建文章</button>
+                    <label class="btn btn-secondary" style="cursor: pointer;">
+                        📥 导入 MD 文件
+                        <input type="file" accept=".md" onchange="importArticle(this)" style="display:none;">
+                    </label>
+                </div>
+                
+                <div id="article-list" class="article-list"></div>
+            </div>
+        </div>
+
+        <!-- 关于内容管理 -->
+        <div id="tab-about-content" class="tab-content hidden">
+            <div class="card">
+                <h2>关于页面模块</h2>
+                <p style="color:#666;margin-bottom:20px;">管理关于页面的模块显示，拖动调整顺序</p>
+                
+                <div class="module-list" id="module-list"></div>
+                
+                <div style="margin-top: 20px;">
+                    <button class="btn btn-secondary" onclick="addModule()">➕ 添加模块</button>
+                </div>
+            </div>
+            
+            <div class="card" id="module-edit-card" style="display:none;">
+                <h2>编辑模块内容</h2>
+                <div class="about-module-edit">
+                    <div class="form-group">
+                        <label>模块 ID</label>
+                        <input type="text" id="module-id" placeholder="如：footprint">
+                    </div>
+                    <div class="form-group">
+                        <label>模块标题</label>
+                        <input type="text" id="module-title" placeholder="如：足迹">
+                    </div>
+                    <div class="form-group">
+                        <label>启用状态</label>
+                        <div class="module-toggle" id="module-enabled-toggle" onclick="toggleModuleEnabled()"></div>
+                    </div>
+                    
+                    <!-- 足迹模块专用 -->
+                    <div id="footprint-module-options">
+                        <div class="form-group">
+                            <label>足迹副标题</label>
+                            <input type="text" id="footprint-subtitle" placeholder="去过的一些地方">
+                        </div>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="saveModule()">💾 保存模块</button>
+                    <button class="btn btn-secondary" onclick="cancelModuleEdit()">取消</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 版本管理 -->
+        <div id="tab-versions" class="tab-content hidden">
+            <div class="card">
+                <h2>📦 版本管理</h2>
+                <p style="color:#666;margin-bottom:20px;">发布时会自动保存版本快照，保留最近 10 个版本</p>
+                
+                <div class="btn-group" style="margin-bottom: 20px;">
+                    <button class="btn btn-success" onclick="createVersion()">📸 创建版本快照</button>
+                </div>
+                
+                <div id="version-list" class="version-list">
+                    <p style="color:#888;text-align:center;padding:30px;">正在加载版本...</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 发布 -->
+        <div id="tab-publish" class="tab-content hidden">
+            <div class="card">
+                <h2>📊 状态总览</h2>
+                <div id="preview" class="preview-area">加载中...</div>
+            </div>
+
+            <div class="card">
+                <h2>☁️ 服务器同步</h2>
+                <p style="color:#666;margin-bottom:15px;">从服务器下载最新数据到本地：个人信息 + 足迹城市 + 文章（本地修改会被覆盖）</p>
+                <button class="btn btn-primary" onclick="syncFromServer(this)" style="padding:12px 30px;">
+                    🔄 从服务器同步
+                </button>
+            </div>
+            
+            <div class="card">
+                <h2>🚀 发布到博客</h2>
+                <p style="color:#666;margin-bottom:15px;">发布前会自动创建版本快照，选择版本后上传到服务器并构建</p>
+
+                <!-- 版本选择 -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; color: #555; font-weight: 500;">📦 选择发布版本</label>
+                    <select id="publish-version" style="width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 1em;">
+                        <option value="">加载中...</option>
+                    </select>
+                    <p style="color: #888; font-size: 0.85em; margin-top: 5px;">
+                        选择要发布的内容版本，默认为最新版本
+                    </p>
+                </div>
+
+                <!-- 进度条 -->
+                <div id="publish-progress" class="publish-progress hidden">
+                    <div class="progress-steps" id="progress-steps">
+                        <div class="progress-step" data-step="connect" id="step-connect">🔌 连接服务器</div>
+                        <div class="progress-step" data-step="versioning" id="step-versioning">🏷️ 创建版本</div>
+                        <div class="progress-step" data-step="upload" id="step-upload">📤 上传文件</div>
+                        <div class="progress-step" data-step="build" id="step-build">🔨 构建网站</div>
+                        <div class="progress-step" data-step="deploy" id="step-deploy">🚀 部署上线</div>
+                        <div class="progress-step" data-step="done" id="step-done">✅ 完成</div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" id="progress-fill"></div>
+                    </div>
+                    <div class="progress-status" id="progress-status">准备就绪</div>
+                </div>
+
+                <button class="publish-btn" onclick="publish()" id="publish-btn">🚀 一键发布到博客</button>
+                <p style="margin-top: 20px; color: #888;">
+                    发布后可在「版本管理」中查看和恢复
+                </p>
+                <a href="https://example.com" target="_blank" style="color: #667eea; margin-top: 10px; display: inline-block;">
+                    → 访问博客预览
+                </a>
+            </div>
+
+            <div class="card" style="background:#fff5f5;border:1px solid #feb2b2;">
+                <h2 style="color:#c53030;border-color:#fc8181;">⚠️ 关闭软件</h2>
+                <p style="color:#666;margin-bottom:15px;">点击后关闭后台服务（请确保没有正在进行的操作）</p>
+                <button class="btn btn-danger" onclick="shutdownApp()" style="padding:12px 30px;">
+                    🛑 关闭 Wonelog 管理后台
+                </button>
+            </div>
+        </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- 文章编辑器 -->
+    <div id="article-editor" class="editor-container">
+        <div class="editor-box">
+            <h2>编辑文章</h2>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <h3 style="margin-bottom: 15px; color: #555; font-size: 1em;">📋 文章信息</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>标题 (title)</label>
+                        <input type="text" id="article-title" placeholder="文章标题">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>发布日期 (pubDate)</label>
+                        <input type="date" id="article-date" placeholder="2026-03-26">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top: 15px; margin-bottom: 0;">
+                    <label>描述 (description)</label>
+                    <input type="text" id="article-description" placeholder="文章简短描述，用于 SEO">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>文件名</label>
+                <input type="text" id="article-filename" placeholder="2024-01-01-my-post.md">
+            </div>
+            <div class="form-group">
+                <label>标签 (tags)</label>
+                <input type="text" id="article-tags" placeholder="多个标签用逗号分隔，如：随笔,生活">
+            </div>
+            <div class="form-group">
+                <label>封面图 URL (heroImage)</label>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="text" id="article-cover" placeholder="封面图URL或点击上传" style="flex: 1;">
+                    <label class="btn btn-secondary" style="cursor: pointer; padding: 10px 16px;">
+                        📷 上传图片
+                        <input type="file" accept="image/*" onchange="uploadCoverImage(this)" style="display:none;">
+                    </label>
+                </div>
+                <div id="cover-preview" style="margin-top: 10px; display: none;">
+                    <img id="cover-img" style="max-width: 300px; max-height: 150px; border-radius: 8px; border: 1px solid #ddd;">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>内容 (Markdown)</label>
+                <textarea id="article-content" placeholder="在这里写文章内容..."></textarea>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-success" onclick="saveArticle()">💾 保存</button>
+                <button class="btn btn-secondary" onclick="closeEditor()">取消</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="toast" class="toast hidden"></div>
+    
+    <script>
+        // 数据
+        let config = {};
+        let cities = [];
+        let links = [];
+        let articles = [];
+        let cityCoords = {};
+        let aboutContent = { modules: [], footprint: {} };
+        let versions = [];
+        let editingModuleId = null;
+
+        // 初始化
+        async function init() {
+            await loadConfig();
+            await loadCities();
+            await loadLinks();
+            await loadArticles();
+            await loadCityCoords();
+            await loadAboutContent();
+            await loadVersions();
+            updatePreview();
+        }
+        
+        async function loadConfig() {
+            const res = await fetch('/api/config');
+            config = await res.json();
+            document.getElementById('avatar').value = config.avatar || '';
+            document.getElementById('nickname').value = config.nickname || '';
+            document.getElementById('greeting').value = config.greeting || 'Hi';
+            document.getElementById('subtitle').value = config.subtitle || '';
+            const bioVal = Array.isArray(config.bio) ? config.bio.join('\n') : (config.bio || '');
+            const descVal = Array.isArray(config.description) ? config.description.join('\n') : (config.description || '');
+            document.getElementById('description').value = descVal;
+            document.getElementById('bio').value = bioVal;
+            document.getElementById('email').value = config.email || '';
+            document.getElementById('github').value = config.socials?.github || '';
+            
+            if (config.avatar) {
+                document.getElementById('avatar-preview').style.display = 'block';
+                document.getElementById('avatar-img').src = config.avatar;
+            }
+        }
+        
+        async function saveProfile() {
+            const bioText = document.getElementById('bio').value;
+            const descText = document.getElementById('description').value;
+            const bioList = bioText.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+            const descList = descText.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+
+            config = {
+                avatar: document.getElementById('avatar').value.trim(),
+                nickname: document.getElementById('nickname').value,
+                greeting: document.getElementById('greeting').value,
+                subtitle: document.getElementById('subtitle').value,
+                description: descList,
+                bio: bioList,
+                email: document.getElementById('email').value,
+                socials: {
+                    github: document.getElementById('github').value,
+                    rss: 'https://example.com/rss.xml'
+                }
+            };
+            await fetch('/api/config', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(config)
+            });
+            toast('个人信息已保存', 'success');
+            updatePreview();
+        }
+        
+        async function loadCityCoords() {
+            const res = await fetch('/api/city-coords');
+            cityCoords = await res.json();
+        }
+        
+        function autoFillCoords() {
+            const name = document.getElementById('city-name').value;
+            if (cityCoords[name]) {
+                document.getElementById('city-lat').value = cityCoords[name].lat;
+                document.getElementById('city-lon').value = cityCoords[name].lon;
+            }
+        }
+        
+        async function loadCities() {
+            const res = await fetch('/api/cities');
+            cities = await res.json();
+            renderCities();
+        }
+        
+        function renderCities() {
+            const list = document.getElementById('city-list');
+            list.innerHTML = cities.map(c => `
+                <div class="city-card ${c.type}">
+                    <span class="type ${c.type}">${c.type === 'live' ? '🏠 居住' : '✈️ 旅行'}</span>
+                    <h3>${c.name}</h3>
+                    <div class="coords">📍 ${c.lat}, ${c.lon}</div>
+                    <div class="desc">${c.desc || ''}</div>
+                    <div style="margin-top: 10px; display: flex; gap: 8px;">
+                        <button class="edit-btn" onclick="editCity('${c.name}')" style="padding: 6px 12px; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85em; background: #667eea; color: white;">✏️ 编辑</button>
+                        <button class="delete-btn" onclick="deleteCity('${c.name}')" style="padding: 6px 12px; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85em; background: #dc3545; color: white;">🗑️ 删除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function editCity(name) {
+            const city = cities.find(c => c.name === name);
+            if (!city) return;
+            
+            document.getElementById('city-name').value = city.name;
+            document.getElementById('city-lat').value = city.lat;
+            document.getElementById('city-lon').value = city.lon;
+            document.getElementById('city-type').value = city.type;
+            document.getElementById('city-desc').value = city.desc || '';
+            
+            toast('已加载城市信息，修改后点击"添加城市"保存', 'success');
+        }
+        
+        function addCity() {
+            const name = document.getElementById('city-name').value.trim();
+            if (!name) { toast('请输入城市名', 'error'); return; }
+            
+            const lat = parseFloat(document.getElementById('city-lat').value) || 0;
+            const lon = parseFloat(document.getElementById('city-lon').value) || 0;
+            const type = document.getElementById('city-type').value;
+            const desc = document.getElementById('city-desc').value;
+            
+            const existIdx = cities.findIndex(c => c.name === name);
+            if (existIdx >= 0) {
+                cities[existIdx] = { name, lat, lon, type, desc };
+            } else {
+                cities.push({ name, lat, lon, type, desc });
+            }
+            
+            saveCities();
+            toast('城市已保存', 'success');
+        }
+        
+        async function saveCities() {
+            await fetch('/api/cities', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(cities)
+            });
+            renderCities();
+            updatePreview();
+        }
+        
+        async function deleteCity(name) {
+            if (!confirm(`确定删除「${name}」吗？`)) return;
+            cities = cities.filter(c => c.name !== name);
+            await saveCities();
+            toast('城市已删除', 'success');
+        }
+
+        // 友链
+        async function loadLinks() {
+            const res = await fetch('/api/links');
+            links = await res.json();
+            renderLinks();
+        }
+
+        function renderLinks() {
+            const list = document.getElementById('link-list');
+            if (!links || links.length === 0) {
+                list.innerHTML = '<p style="color:#888;text-align:center;padding:30px;">暂无友链</p>';
+                return;
+            }
+            list.innerHTML = links.map((link, idx) => `
+                <div style="display: flex; align-items: center; gap: 1em; padding: 1em 1.2em; background: #f8f9fa; border-radius: 10px; border-left: 4px solid #667eea;">
+                    <img src="${link.avatar || ''}" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 1px solid #eee; flex-shrink: 0;" onerror="this.style.display='none'">
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="font-weight: 600; color: #333; font-size: 1em;">${link.name}</div>
+                        <div style="color: #888; font-size: 0.85em; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${link.desc || link.url}</div>
+                    </div>
+                    <div style="display: flex; gap: 8px; flex-shrink: 0;">
+                        <button onclick="editLink(${idx})" style="padding: 6px 12px; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85em; background: #667eea; color: white;">✏️ 编辑</button>
+                        <button onclick="deleteLink(${idx})" style="padding: 6px 12px; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85em; background: #dc3545; color: white;">🗑️ 删除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function editLink(idx) {
+            const link = links[idx];
+            if (!link) return;
+            document.getElementById('link-name').value = link.name || '';
+            document.getElementById('link-url').value = link.url || '';
+            document.getElementById('link-desc').value = link.desc || '';
+            document.getElementById('link-avatar').value = link.avatar || '';
+            if (link.avatar) {
+                document.getElementById('link-avatar-preview').style.display = 'block';
+                document.getElementById('link-avatar-img').src = link.avatar;
+            }
+            toast('已加载友链信息，修改后点击"添加友链"保存', 'success');
+        }
+
+        function addLink() {
+            const name = document.getElementById('link-name').value.trim();
+            const url = document.getElementById('link-url').value.trim();
+            if (!name) { toast('请输入名称', 'error'); return; }
+            if (!url) { toast('请输入链接', 'error'); return; }
+
+            const desc = document.getElementById('link-desc').value.trim();
+            const avatar = document.getElementById('link-avatar').value.trim();
+
+            const existIdx = links.findIndex(l => l.name === name);
+            const newLink = { name, url, desc, avatar };
+            if (existIdx >= 0) {
+                links[existIdx] = newLink;
+            } else {
+                links.push(newLink);
+            }
+
+            saveLinks();
+            document.getElementById('link-name').value = '';
+            document.getElementById('link-url').value = '';
+            document.getElementById('link-desc').value = '';
+            document.getElementById('link-avatar').value = '';
+            document.getElementById('link-avatar-preview').style.display = 'none';
+            toast('友链已保存', 'success');
+        }
+
+        async function saveLinks() {
+            await fetch('/api/links', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(links)
+            });
+            renderLinks();
+            updatePreview();
+        }
+
+        async function deleteLink(idx) {
+            const link = links[idx];
+            if (!confirm(`确定删除「${link.name}」吗？`)) return;
+            links.splice(idx, 1);
+            await saveLinks();
+            toast('友链已删除', 'success');
+        }
+
+        async function uploadLinkAvatar(input) {
+            const file = input.files[0];
+            if (!file) return;
+            toast('正在上传头像...', '');
+            const formData = new FormData();
+            formData.append('file', file);
+            try {
+                const res = await fetch('/api/links/upload-avatar', { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('link-avatar').value = data.url;
+                    document.getElementById('link-avatar-preview').style.display = 'block';
+                    document.getElementById('link-avatar-img').src = data.url;
+                    toast('头像上传成功！', 'success');
+                } else {
+                    toast('上传失败: ' + data.message, 'error');
+                }
+            } catch (e) {
+                toast('上传失败: ' + e.message, 'error');
+            }
+            input.value = '';
+        }
+
+        document.getElementById('link-avatar').addEventListener('input', function() {
+            const url = this.value;
+            if (url) {
+                document.getElementById('link-avatar-preview').style.display = 'block';
+                document.getElementById('link-avatar-img').src = url;
+            } else {
+                document.getElementById('link-avatar-preview').style.display = 'none';
+            }
+        });
+
+        // 关于内容管理
+        async function loadAboutContent() {
+            const res = await fetch('/api/about-content');
+            aboutContent = await res.json();
+            renderModules();
+        }
+
+        function renderModules() {
+            const list = document.getElementById('module-list');
+            if (!aboutContent.modules || aboutContent.modules.length === 0) {
+                list.innerHTML = '<p style="color:#888;text-align:center;padding:30px;">暂无模块，点击「添加模块」创建</p>';
+                return;
+            }
+            list.innerHTML = aboutContent.modules.map((m, idx) => `
+                <div class="module-item">
+                    <div>
+                        <h4>${m.title}</h4>
+                        <div style="color:#888;font-size:0.85em;">ID: ${m.id} | ${m.enabled ? '✅ 已启用' : '⛔ 已禁用'}</div>
+                    </div>
+                    <div class="module-actions">
+                        <button onclick="editModule('${m.id}')" class="btn btn-secondary btn-sm">✏️ 编辑</button>
+                        <button onclick="deleteModule('${m.id}')" class="btn btn-danger btn-sm">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function editModule(id) {
+            editingModuleId = id;
+            const module = aboutContent.modules.find(m => m.id === id);
+            if (!module) return;
+            
+            document.getElementById('module-id').value = module.id;
+            document.getElementById('module-title').value = module.title;
+            document.getElementById('module-enabled-toggle').className = 'module-toggle' + (module.enabled ? ' active' : '');
+            
+            // 足迹模块专用
+            if (id === 'footprint') {
+                document.getElementById('footprint-module-options').style.display = 'block';
+                document.getElementById('footprint-subtitle').value = aboutContent.footprint?.subtitle || '';
+            } else {
+                document.getElementById('footprint-module-options').style.display = 'none';
+            }
+            
+            document.getElementById('module-edit-card').style.display = 'block';
+        }
+
+        function toggleModuleEnabled() {
+            const toggle = document.getElementById('module-enabled-toggle');
+            toggle.classList.toggle('active');
+        }
+
+        function saveModule() {
+            const id = document.getElementById('module-id').value.trim();
+            const title = document.getElementById('module-title').value.trim();
+            const enabled = document.getElementById('module-enabled-toggle').classList.contains('active');
+            
+            if (!id || !title) {
+                toast('请填写模块ID和标题', 'error');
+                return;
+            }
+            
+            // 检查ID是否重复（排除自己）
+            const existingIdx = aboutContent.modules.findIndex(m => m.id === id && m.id !== editingModuleId);
+            if (existingIdx >= 0) {
+                toast('模块ID已存在', 'error');
+                return;
+            }
+            
+            // 更新或添加模块
+            if (editingModuleId && editingModuleId !== id) {
+                // ID变更，删除旧模块
+                aboutContent.modules = aboutContent.modules.filter(m => m.id !== editingModuleId);
+            }
+            
+            const existingModule = aboutContent.modules.find(m => m.id === id);
+            if (existingModule) {
+                existingModule.title = title;
+                existingModule.enabled = enabled;
+            } else {
+                aboutContent.modules.push({ id, title, enabled });
+            }
+            
+            // 保存足迹模块专用配置
+            if (id === 'footprint') {
+                aboutContent.footprint = aboutContent.footprint || {};
+                aboutContent.footprint.subtitle = document.getElementById('footprint-subtitle').value;
+            }
+            
+            // 保存到服务器
+            fetch('/api/about-content', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(aboutContent)
+            }).then(res => res.json()).then(data => {
+                if (data.success) {
+                    toast('模块已保存', 'success');
+                    loadAboutContent();
+                    cancelModuleEdit();
+                }
+            });
+        }
+
+        function cancelModuleEdit() {
+            editingModuleId = null;
+            document.getElementById('module-edit-card').style.display = 'none';
+            document.getElementById('module-id').value = '';
+            document.getElementById('module-title').value = '';
+            document.getElementById('footprint-subtitle').value = '';
+        }
+
+        function addModule() {
+            editingModuleId = null;
+            document.getElementById('module-id').value = '';
+            document.getElementById('module-title').value = '';
+            document.getElementById('module-enabled-toggle').className = 'module-toggle active';
+            document.getElementById('footprint-module-options').style.display = 'none';
+            document.getElementById('module-edit-card').style.display = 'block';
+        }
+
+        function deleteModule(id) {
+            if (!confirm(`确定删除模块「${id}」吗？`)) return;
+            aboutContent.modules = aboutContent.modules.filter(m => m.id !== id);
+            fetch('/api/about-content', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(aboutContent)
+            }).then(res => res.json()).then(data => {
+                if (data.success) {
+                    toast('模块已删除', 'success');
+                    loadAboutContent();
+                }
+            });
+        }
+
+        // 版本管理
+        async function loadVersions() {
+            try {
+                const res = await fetch('/api/versions');
+                if (!res.ok) throw new Error('加载失败: HTTP ' + res.status);
+                versions = await res.json();
+                renderVersions();
+                updateVersionSelect();
+            } catch (e) {
+                console.error('loadVersions error:', e);
+                const list = document.getElementById('version-list');
+                if (list) list.innerHTML = '<p style="color:#c53030;text-align:center;padding:30px;">❌ 加载版本失败: ' + e.message + '</p>';
+            }
+        }
+        
+        function updateVersionSelect() {
+            const select = document.getElementById('publish-version');
+            if (!versions || versions.length === 0) {
+                select.innerHTML = '<option value="">暂无版本，请先发布</option>';
+                return;
+            }
+            
+            select.innerHTML = versions.map((v, idx) => {
+                const date = new Date(v.created_at).toLocaleString('zh-CN');
+                const label = idx === 0 ? `最新 - ${v.timestamp}` : v.timestamp;
+                return `<option value="${v.timestamp}" ${idx === 0 ? 'selected' : ''}>${label} (${date})</option>`;
+            }).join('');
+        }
+
+        function renderVersions() {
+            const list = document.getElementById('version-list');
+            if (!versions || versions.length === 0) {
+                list.innerHTML = '<p style="color:#888;text-align:center;padding:30px;">暂无版本快照</p>';
+                return;
+            }
+            list.innerHTML = versions.map((v, idx) => `
+                <div class="version-item ${idx === 0 ? 'current' : ''}">
+                    <div class="version-info">
+                        <div class="timestamp">📦 ${v.timestamp}</div>
+                        <div class="meta">创建于: ${new Date(v.created_at).toLocaleString('zh-CN')}</div>
+                        <div class="stats">
+                            <span>🏠 ${v.cities_count || 0} 城市</span>
+                            <span>🔗 ${v.links_count || 0} 友链</span>
+                            <span>📝 ${v.articles_count || 0} 文章</span>
+                        </div>
+                    </div>
+                    <div class="version-actions">
+                        ${idx !== 0 ? `<button onclick="restoreVersion('${v.timestamp}')" class="btn btn-warning btn-sm">🔄 恢复</button>` : '<span style="color:#38ef7d;font-size:0.85em;">✅ 最新</span>'}
+                        <button onclick="deleteVersion('${v.timestamp}')" class="btn btn-danger btn-sm">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function createVersion() {
+            try {
+                const res = await fetch('/api/versions', { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    toast('版本快照已创建: ' + data.timestamp, 'success');
+                    loadVersions();
+                } else {
+                    toast('创建失败: ' + (data.message || '未知错误'), 'error');
+                }
+            } catch (e) {
+                toast('创建失败: ' + e.message, 'error');
+            }
+        }
+
+        async function restoreVersion(timestamp) {
+            if (!confirm(`确定恢复到版本 ${timestamp} 吗？`)) return;
+            try {
+                const res = await fetch(`/api/versions/${timestamp}`, { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    toast('已恢复到版本: ' + timestamp, 'success');
+                    // 重新加载所有数据
+                    await loadConfig();
+                    await loadCities();
+                    await loadLinks();
+                    await loadArticles();
+                    await loadAboutContent();
+                    await loadVersions();
+                    updatePreview();
+                } else {
+                    toast('恢复失败: ' + (data.message || '未知错误'), 'error');
+                }
+            } catch (e) {
+                toast('恢复失败: ' + e.message, 'error');
+            }
+        }
+
+        async function deleteVersion(timestamp) {
+            if (!confirm(`确定删除版本 ${timestamp} 吗？`)) return;
+            try {
+                const res = await fetch(`/api/versions/${timestamp}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    toast('版本已删除', 'success');
+                    loadVersions();
+                } else {
+                    toast('删除失败: ' + (data.message || '未知错误'), 'error');
+                }
+            } catch (e) {
+                toast('删除失败: ' + e.message, 'error');
+            }
+        }
+
+        // 文章
+        async function loadArticles() {
+            try {
+                const res = await fetch('/api/articles');
+                articles = await res.json();
+                renderArticles();
+            } catch (e) {
+                console.warn('loadArticles failed:', e.message);
+                // 服务器不可用时，保持现有文章列表不变
+            }
+        }
+        
+        function renderArticles() {
+            const list = document.getElementById('article-list');
+            list.innerHTML = articles.map(a => `
+                <div class="article-item">
+                    <div>
+                        <h3>${a.title}</h3>
+                        <div class="date">📅 ${a.date}</div>
+                        ${a.description ? `<div style="color:#666;font-size:0.85em;margin-top:4px;">${a.description}</div>` : ''}
+                        ${a.tags && a.tags.length > 0 ? `<div style="margin-top:4px;">${a.tags.map(t => `<span style="background:#f0f0f0;color:#666;padding:0.15em 0.5em;border-radius:4px;font-size:0.8em;margin-right:4px;">${t}</span>`).join('')}</div>` : ''}
+                    </div>
+                    <div class="actions">
+                        <button class="edit-btn" onclick="editArticle('${a.filename}')">✏️ 编辑</button>
+                        <button class="delete-btn" onclick="deleteArticle('${a.filename}')">🗑️ 删除</button>
+                    </div>
+                </div>
+            `).join('') || '<p style="color:#888;text-align:center;padding:30px;">暂无文章</p>';
+        }
+        
+        function newArticle() {
+            const date = new Date().toISOString().split('T')[0];
+            document.getElementById('article-filename').value = `${date}-new-post.md`;
+            document.getElementById('article-title').value = '';
+            document.getElementById('article-date').value = date;
+            document.getElementById('article-description').value = '';
+            document.getElementById('article-tags').value = '';
+            document.getElementById('article-cover').value = '';
+            document.getElementById('cover-preview').style.display = 'none';
+            document.getElementById('article-content').value = `在这里写文章内容...
+
+# 标题
+
+正文内容...
+`;
+            document.getElementById('article-editor').classList.add('show');
+        }
+        
+        async function editArticle(filename) {
+            try {
+            const res = await fetch(`/api/articles/${encodeURIComponent(filename)}`);
+            const data = await res.json();
+            document.getElementById('article-filename').value = filename;
+            
+            const content = data.content || '';
+            
+            let title = '', description = '', pubDate = '', cover = '', tags = '';
+            if (content.startsWith('---')) {
+                const lines = content.split('\n');
+                let inFrontmatter = false;
+                for (const line of lines) {
+                    if (line.trim() === '---') {
+                        if (!inFrontmatter) { inFrontmatter = true; continue; }
+                        else { break; }
+                    }
+                    if (inFrontmatter) {
+                        // 正确解析: 取第一个冒号之后的全部内容作为value
+                        const colonIdx = line.indexOf(':');
+                        const key = colonIdx >= 0 ? line.substring(0, colonIdx).trim() : '';
+                        const value = colonIdx >= 0 ? line.substring(colonIdx + 1).trim().replace(/^['"]|['"]$/g, '') : '';
+                        if (key === 'title') title = value;
+                        else if (key === 'description') description = value;
+                        else if (key === 'pubDate') pubDate = value.split('T')[0];
+                        else if (key === 'heroImage' || key === 'cover') cover = value;
+                        else if (key === 'tags') {
+                            tags = value.replace(/[\[\]]/g, '').split(',').map(t => t.trim().replace(/^['"]|['"]$/g, '')).filter(t => t).join(', ');
+                        }
+                    }
+                }
+            }
+            
+            document.getElementById('article-title').value = title;
+            document.getElementById('article-date').value = pubDate;
+            document.getElementById('article-description').value = description;
+            document.getElementById('article-tags').value = tags;
+            document.getElementById('article-cover').value = cover;
+            
+            if (cover) {
+                document.getElementById('cover-preview').style.display = 'block';
+                document.getElementById('cover-img').src = cover;
+            } else {
+                document.getElementById('cover-preview').style.display = 'none';
+            }
+            
+            let body = content;
+            if (content.startsWith('---')) {
+                const idx = content.indexOf('\n---\n', 4);
+                if (idx !== -1) body = content.substring(idx + 5);
+            }
+            document.getElementById('article-content').value = body;
+            document.getElementById('article-editor').classList.add('show');
+            } catch (e) {
+                toast('打开文章失败: ' + e.message, 'error');
+            }
+        }
+        
+        async function saveArticle() {
+            let filename = document.getElementById('article-filename').value.trim();
+            const title = document.getElementById('article-title').value.trim();
+            const description = document.getElementById('article-description').value.trim();
+            const pubDate = document.getElementById('article-date').value;
+            const cover = document.getElementById('article-cover').value.trim();
+            const tagsStr = document.getElementById('article-tags').value.trim();
+            const body = document.getElementById('article-content').value;
+            
+            if (!filename.endsWith('.md')) filename += '.md';
+            if (!title) { toast('请输入文章标题', 'error'); return; }
+            
+            // 构建 frontmatter（包含 tags）
+            const tagsArray = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(t => t) : [];
+            const tagsLine = tagsArray.length > 0 ? `tags: [${tagsArray.map(t => `'${t}'`).join(', ')}]` : '';
+            
+            let frontmatter = `---
+title: '${title}'
+description: '${description}'
+pubDate: '${pubDate}'
+heroImage: '${cover}'
+${tagsLine}
+---
+`;
+            
+            const content = frontmatter + body;
+            
+            try {
+                const res = await fetch(`/api/articles/${encodeURIComponent(filename)}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ content })
+                });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                closeEditor();
+                await loadArticles();
+                updatePreview();
+                toast('文章已保存', 'success');
+            } catch (e) {
+                toast('保存失败: ' + e.message + '（请检查后台服务是否运行）', 'error');
+            }
+        }
+        
+        async function deleteArticle(filename) {
+            if (!confirm(`确定删除「${filename}」吗？`)) return;
+            try {
+                await fetch(`/api/articles/${encodeURIComponent(filename)}`, { method: 'DELETE' });
+                await loadArticles();
+                updatePreview();
+                toast('文章已删除', 'success');
+            } catch (e) {
+                toast('删除失败: ' + e.message, 'error');
+            }
+        }
+        
+        async function importArticle(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            const res = await fetch('/api/articles/import', { method: 'POST', body: formData });
+            const data = await res.json();
+            
+            if (data.success) {
+                await loadArticles();
+                updatePreview();
+                toast(`已导入: ${data.filename}`, 'success');
+            } else {
+                toast('导入失败', 'error');
+            }
+            input.value = '';
+        }
+        
+        function closeEditor() {
+            document.getElementById('article-editor').classList.remove('show');
+        }
+        
+        async function updatePreview() {
+            const preview = `头像: ${config.avatar || '(未设置)'}
+
+个人信息:
+- 昵称: ${config.nickname || ''}
+- 简介: ${Array.isArray(config.bio) ? config.bio.join(' / ') : (config.bio || '')}
+- 个人简介: ${Array.isArray(config.description) ? config.description.join('\n         ') : (config.description || '')}
+- 邮箱: ${config.email || ''}
+- GitHub: ${config.socials?.github || ''}
+
+足迹城市 (${cities.length}个):
+${cities.map(c => `- ${c.type === 'live' ? '🏠' : '✈️'} ${c.name}`).join('\n')}
+
+友链 (${links.length}个):
+${links.map(l => `- ${l.name}: ${l.url}`).join('\n')}
+
+文章 (${articles.length}篇):
+${articles.map(a => `- ${a.filename}`).join('\n')}`;
+
+            document.getElementById('preview').textContent = preview;
+        }
+        
+        async function publish() {
+            const selectedVersion = document.getElementById('publish-version').value;
+            const versionLabel = selectedVersion || '当前内容';
+
+            if (!confirm(`确定要发布「${versionLabel}」到博客吗？\n发布前会自动创建版本快照。`)) return;
+
+            // 显示进度条
+            const progressDiv = document.getElementById('publish-progress');
+            const btn = document.getElementById('publish-btn');
+            const fill = document.getElementById('progress-fill');
+            const status = document.getElementById('progress-status');
+
+            // 重置进度条
+            progressDiv.classList.remove('hidden');
+            fill.style.width = '0%';
+            document.querySelectorAll('.progress-step').forEach(s => {
+                s.classList.remove('active', 'done', 'error');
+            });
+            status.textContent = '准备发布...';
+            status.className = 'progress-status';
+            btn.disabled = true;
+
+            // 步骤更新函数
+            const setStep = (step, pct, msg) => {
+                if (step) {
+                    const el = document.getElementById('step-' + step);
+                    if (el) {
+                        el.classList.remove('active');
+                        el.classList.add('done');
+                    }
+                    const next = document.getElementById('step-' + step + '-next');
+                }
+                fill.style.width = pct + '%';
+                if (msg) {
+                    status.textContent = msg;
+                    status.className = pct < 100 ? 'progress-status active' : 'progress-status done';
+                }
+                if (step) {
+                    const active = document.getElementById('step-' + step);
+                    if (active) active.classList.add('active');
+                }
+            };
+
+            // 进度轮询
+            let pollInterval = null;
+            const stepMap = {
+                connecting: ['connect', 10],
+                upload: ['upload', 40],
+                build: ['build', 70],
+                deploy: ['deploy', 90],
+                done: ['done', 100]
+            };
+            const startPoll = () => {
+                pollInterval = setInterval(async () => {
+                    try {
+                        const r = await fetch('/api/publish/status');
+                        const s = await r.json();
+                        const mapped = stepMap[s.step];
+                        if (mapped) setStep(mapped[0], mapped[1], s.message || status.textContent);
+                        if (s.error) {
+                            const fallbackStep = mapped ? mapped[0] : 'build';
+                            const errStep = document.getElementById('step-' + (s.error_step || fallbackStep));
+                            if (errStep) { errStep.classList.remove('active'); errStep.classList.add('error'); }
+                            status.textContent = '? ' + (s.message || '????');
+                            status.className = 'progress-status error';
+                            clearInterval(pollInterval);
+                        }
+                        if (s.step === 'done') clearInterval(pollInterval);
+                    } catch (e) { /* ignore */ }
+                }, 1000);
+            };
+
+            try {
+                        const r = await fetch('/api/publish/status');
+                        const s = await r.json();
+                        if (s.step === 'done' || s.step === 'error') {
+                            clearInterval(pollInterval);
+                        }
+                    } catch (e) { /* ignore */ }
+                }, 1000);
+            };
+
+            try {
+                // 连接中
+                setStep('connect', 10, '正在连接服务器...');
+                const body = selectedVersion ? { version: selectedVersion } : {};
+                const res = await fetch('/api/publish', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    // 发布成功
+                    setStep('versioning', 25, '创建版本号...');
+                    setStep('upload', 40, '上传文件...');
+                    setStep('build', 70, '构建网站...');
+                    setStep('deploy', 90, '部署上线...');
+                    setStep('done', 100, '发布成功！');
+                    fill.style.width = '100%';
+                    const verMsg = data.code_version ? ' [' + data.code_version + ']' : '';
+                    status.textContent = '🎉 ' + data.message + verMsg;
+                    status.className = 'progress-status done';
+                    toast('🎉 ' + data.message + verMsg, 'success');
+                    await loadVersions();
+                    setTimeout(() => {
+                        progressDiv.classList.add('hidden');
+                        window.open('https://example.com', '_blank');
+                    }, 2000);
+                } else {
+                    // 发布失败
+                    const errStep = document.getElementById('step-' + (data.error_step || 'build'));
+                    if (errStep) { errStep.classList.remove('active'); errStep.classList.add('error'); }
+                    fill.style.width = '100%';
+                    status.textContent = '❌ ' + (data.message || '发布失败');
+                    status.className = 'progress-status error';
+                    toast('发布失败: ' + (data.message || '未知错误'), 'error');
+                }
+            } catch (e) {
+                // 网络错误
+                fill.style.width = '100%';
+                status.textContent = '❌ 网络错误: ' + e.message;
+                status.className = 'progress-status error';
+                const errEl = document.getElementById('step-connect');
+                if (errEl) { errEl.classList.remove('active'); errEl.classList.add('error'); }
+                toast('发布失败: ' + e.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🚀 一键发布到博客';
+                if (pollInterval) clearInterval(pollInterval);
+            }
+        }
+
+        async function syncFromServer(btn) {
+            if (!confirm('确定要从服务器同步吗？本地未保存的修改会被服务器数据覆盖。')) return;
+            btn.textContent = '同步中...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/sync', { method: 'POST' });
+                const data = await res.json();
+
+                if (data.success) {
+                    toast(data.message, 'success');
+                    await loadConfig();
+                    await loadCities();
+                    await loadLinks();
+                    await loadArticles();
+                    await loadAboutContent();
+                    updatePreview();
+                } else {
+                    toast('同步失败: ' + (data.message || '未知错误'), 'error');
+                }
+            } catch (e) {
+                toast('同步失败: ' + e.message, 'error');
+            } finally {
+                btn.textContent = '🔄 从服务器同步';
+                btn.disabled = false;
+            }
+        }
+
+        async function shutdownApp() {
+            if (!confirm('确定要关闭 Wonelog 管理后台吗？')) return;
+            const res = await fetch('/api/shutdown', { method: 'POST' });
+            const data = await res.json();
+            if (data.success) {
+                toast('服务即将关闭...', 'success');
+                setTimeout(() => window.close(), 1500);
+            }
+        }
+        
+        function showTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            const activeTab = document.querySelector(`.tab[onclick="showTab('${tab}')"]`);
+            if (activeTab) activeTab.classList.add('active');
+            document.getElementById('tab-' + tab).classList.remove('hidden');
+        }
+        
+        function toast(msg, type = '') {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = 'toast ' + type;
+            setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
+        
+        init();
+        // 上传封面图
+        async function uploadCoverImage(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            toast('正在上传图片...', '');
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                const res = await fetch('/api/upload-image', { method: 'POST', body: formData });
+                const data = await res.json();
+                
+                if (data.success) {
+                    document.getElementById('article-cover').value = data.url;
+                    document.getElementById('cover-preview').style.display = 'block';
+                    document.getElementById('cover-img').src = data.url;
+                    toast('图片上传成功！', 'success');
+                } else {
+                    toast('上传失败: ' + data.message, 'error');
+                }
+            } catch (e) {
+                toast('上传失败: ' + e.message, 'error');
+            }
+            
+            input.value = '';
+        }
+        
+        // 显示头像预览
+        document.getElementById('avatar').addEventListener('input', function() {
+            const url = this.value;
+            if (url) {
+                document.getElementById('avatar-preview').style.display = 'block';
+                document.getElementById('avatar-img').src = url;
+            } else {
+                document.getElementById('avatar-preview').style.display = 'none';
+            }
+        });
+        
+        async function uploadAvatar(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            toast('正在上传头像...', '');
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                const res = await fetch('/api/upload-image', { method: 'POST', body: formData });
+                const data = await res.json();
+                
+                if (data.success) {
+                    document.getElementById('avatar').value = data.url;
+                    document.getElementById('avatar-preview').style.display = 'block';
+                    document.getElementById('avatar-img').src = data.url;
+                    toast('头像上传成功！', 'success');
+                } else {
+                    toast('上传失败: ' + data.message, 'error');
+                }
+            } catch (e) {
+                toast('上传失败: ' + e.message, 'error');
+            }
+            
+            input.value = '';
+        }
+    </script>
+</body>
+</html>
+
+

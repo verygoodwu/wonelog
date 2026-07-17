@@ -1,0 +1,19 @@
+{
+    "name":  "wonelog-blog",
+    "version":  "1.0.0",
+    "private":  true,
+    "type":  "module",
+    "scripts":  {
+                    "dev":  "astro dev --host 0.0.0.0",
+                    "build":  "astro build",
+                    "preview":  "astro preview --host 0.0.0.0"
+                },
+    "dependencies":  {
+                         "astro":  "^5.0.0",
+                         "sharp":  "^0.33.5"
+                     },
+    "devDependencies":  {
+                            "typescript":  "^5.5.4"
+                        },
+    "description":  "Astro frontend for the Wonelog self-hosted blog platform."
+}

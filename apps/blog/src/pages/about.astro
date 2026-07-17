@@ -1,0 +1,91 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import config from '../content/config.json';
+import citiesData from '../content/cities.json';
+import aboutContent from '../content/about_content.json';
+
+const bio = Array.isArray(config.bio) ? config.bio : [];
+const cities = citiesData.cities ?? [];
+const citiesJson = JSON.stringify(cities);
+const showFootprint = (aboutContent.modules ?? []).some((m) => m.id === 'footprint' && m.enabled !== false);
+---
+<BaseLayout title="关于 - Wonelog" description={`关于 ${config.nickname ?? 'Wonelog'}`}>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <section class="page-title">
+    <h1>关于</h1>
+  </section>
+
+  <section class="about-layout">
+    <div class="about-panel">
+      <h2>{config.nickname ?? 'Your Name'}</h2>
+      <ul>
+        {bio.map((item) => <li>{item}</li>)}
+      </ul>
+      <div class="contact-row">
+        {config.email && <a href={`mailto:${config.email}`}>Email</a>}
+        {config.socials?.github && <a href={`https://github.com/${config.socials.github}`}>GitHub</a>}
+      </div>
+    </div>
+  </section>
+
+  {showFootprint && (
+    <section class="section">
+      <div class="section-head">
+        <h2>{aboutContent.modules?.find((m) => m.id === 'footprint')?.title ?? '足迹'}</h2>
+        <p>{aboutContent.footprint?.subtitle ?? '去过的一些地方'}</p>
+      </div>
+      <div class="china-map-container">
+        <div id="china-map"></div>
+        <div class="map-legend">
+          <span><span class="legend-dot live"></span>居住</span>
+          <span><span class="legend-dot travel"></span>旅行</span>
+        </div>
+      </div>
+    </section>
+  )}
+  <script is:inline src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script define:vars={{ citiesJson }}>
+    const cities = JSON.parse(citiesJson);
+    const mapEl = document.getElementById('china-map');
+    const escapeHtml = (value) => String(value ?? '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+
+    if (mapEl && window.L) {
+      const map = window.L.map('china-map', {
+        center: [32, 110],
+        zoom: 4,
+        zoomControl: true,
+        scrollWheelZoom: true,
+        attributionControl: false,
+        maxBounds: [[15, 70], [55, 140]],
+        maxBoundsViscosity: 1,
+        minZoom: 3,
+        maxZoom: 18
+      });
+
+      window.L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+        subdomains: '1234',
+        maxZoom: 18
+      }).addTo(map);
+
+      cities
+        .filter((city) => Number.isFinite(Number(city.lat)) && Number.isFinite(Number(city.lon)))
+        .forEach((city) => {
+          const color = city.type === 'live' ? '#4285f4' : '#ff9800';
+          const icon = window.L.divIcon({
+            className: 'custom-marker',
+            html: `<div style="width:14px;height:14px;background:${color};border:2px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.3);"></div>`,
+            iconSize: [14, 14],
+            iconAnchor: [7, 7]
+          });
+          window.L.marker([Number(city.lat), Number(city.lon)], { icon })
+            .addTo(map)
+            .bindPopup(`<strong>${escapeHtml(city.name)}</strong><br>${escapeHtml(city.desc)}`);
+        });
+    }
+  </script>
+</BaseLayout>

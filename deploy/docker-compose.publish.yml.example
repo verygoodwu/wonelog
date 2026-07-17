@@ -1,0 +1,4 @@
+services:
+  wonelog-server:
+    volumes:
+      - ./secrets/id_ed25519:/run/secrets/wonelog_ssh_key:ro

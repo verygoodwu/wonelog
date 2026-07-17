@@ -1,0 +1,12 @@
+{
+    "modules":  [
+                    {
+                        "id":  "footprint",
+                        "title":  "足迹",
+                        "enabled":  true
+                    }
+                ],
+    "footprint":  {
+                      "subtitle":  "去过的一些地方"
+                  }
+}

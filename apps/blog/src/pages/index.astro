@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import config from '../content/config.json';
+
+const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const desc = Array.isArray(config.description) ? config.description.join(' ') : config.description;
+const socialGithub = config.socials?.github ? `https://github.com/${config.socials.github}` : '';
+---
+<BaseLayout title={`${config.nickname ?? 'Wonelog'} - 首页`} description={desc}>
+  <section class="home-hero">
+    <div class="home-copy">
+      <h1>{config.greeting ?? `Hi, ${config.nickname ?? 'Your Name'}`}</h1>
+      <p class="home-subtitle">{config.subtitle ?? '发现-学习-分享'}</p>
+      <p class="home-desc">{desc}</p>
+      <div class="home-actions">
+        {socialGithub && <a href={socialGithub} target="_blank" rel="noreferrer" aria-label="GitHub">GitHub</a>}
+        {config.socials?.rss && <a href={config.socials.rss} target="_blank" rel="noreferrer" aria-label="RSS">RSS</a>}
+        {config.email && <a href={`mailto:${config.email}`} aria-label="Email">Email</a>}
+      </div>
+    </div>
+    {config.avatar && <img class="home-avatar" src={config.avatar} alt={config.nickname ?? 'avatar'} decoding="async" />}
+  </section>
+
+  <section class="home-posts">
+    <div class="home-section-title"><span>&#x6211;&#x5199;&#x7684;&#x6587;&#x7AE0; ↓</span></div>
+    <div class="compact-post-list">
+      {posts.map((post, index) => (
+        <a class="compact-post-card" href={`/blog/${post.slug}/`}>
+          <div>
+            <h2>{post.data.title}</h2>
+            <p>{post.data.description}</p>
+            <time>{post.data.pubDate.toISOString().slice(0, 10)}</time>
+          </div>
+          {post.data.heroImage && <img src={post.data.heroImage} alt={post.data.title} loading={index < 2 ? 'eager' : 'lazy'} decoding="async" />}
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
