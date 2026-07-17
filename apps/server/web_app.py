@@ -14,7 +14,7 @@ import requests
 from datetime import datetime
 from flask import Flask, render_template, request, jsonify, send_from_directory
 
-# 澶勭悊 PyInstaller 鎵撳寘鍚庣殑璺緞
+# 处理 PyInstaller 打包后的资源路径
 def get_resource_path(relative_path):
     """Internal helper."""
     if hasattr(sys, '_MEIPASS'):
@@ -23,10 +23,10 @@ def get_resource_path(relative_path):
         base_path = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(base_path, relative_path)
 
-# 璺緞閰嶇疆
+# 路径配置
 BASE_DIR = os.path.dirname(os.path.abspath(sys.executable)) if getattr(sys, 'frozen', False) else os.path.dirname(os.path.abspath(__file__))
 
-# 妯℃澘璺緞
+# 模板路径
 if hasattr(sys, '_MEIPASS'):
     TEMPLATE_DIR = os.path.join(sys._MEIPASS, 'templates')
 else:
@@ -34,20 +34,20 @@ else:
 
 app = Flask(__name__, template_folder=TEMPLATE_DIR)
 
-# 鏁版嵁鏂囦欢璺緞
+# 数据文件路径
 CONFIG_FILE = os.path.join(BASE_DIR, 'config.json')
 CITIES_FILE = os.path.join(BASE_DIR, 'cities.json')
 LINKS_FILE = os.path.join(BASE_DIR, 'links.json')
 ABOUT_CONTENT_FILE = os.path.join(BASE_DIR, 'about_content.json')
-PROJECTS_FILE = os.path.join(BASE_DIR, 'projects.json')  # 鍏充簬椤甸潰妯″潡鍐呭
+PROJECTS_FILE = os.path.join(BASE_DIR, 'projects.json')  # 项目展示数据
 POSTS_DIR = os.path.join(BASE_DIR, 'posts')
 IMAGES_DIR = os.path.join(BASE_DIR, 'images')
 
-# 鐗堟湰绠＄悊
+# 版本管理
 VERSIONS_DIR = os.path.join(BASE_DIR, 'versions')
 MAX_VERSIONS = 10
 
-# 鏈嶅姟鍣ㄩ厤缃?
+# 服务器配置
 SERVER_HOST = os.environ.get('WONELOG_SERVER_HOST', '')
 SERVER_USER = os.environ.get('WONELOG_SERVER_USER', 'deploy')
 SERVER_KEY = os.environ.get('WONELOG_SERVER_KEY') or os.path.expanduser('~/.ssh/id_ed25519')
@@ -57,16 +57,16 @@ SERVER_BLOG_DIR = os.environ.get('WONELOG_SERVER_BLOG_DIR', f'{SERVER_SOURCE_DIR
 SERVER_CONTENT_DIR = os.environ.get('WONELOG_SERVER_CONTENT_DIR', f'{SERVER_SOURCE_DIR}/src/content/')
 SERVER_PUBLIC_IMAGES_DIR = os.environ.get('WONELOG_SERVER_PUBLIC_IMAGES_DIR', f'{SERVER_SOURCE_DIR}/public/images/')
 
-# GitHub 閰嶇疆 (鍥惧簥)
+# GitHub 图库配置
 GITHUB_TOKEN = os.environ.get('WONELOG_GITHUB_TOKEN', '')
 GITHUB_REPO = os.environ.get('WONELOG_GITHUB_REPO', '')
 GITHUB_BRANCH = os.environ.get('WONELOG_GITHUB_BRANCH', 'main')
 
-# 纭繚鐩綍瀛樺湪
+# 确保数据目录存在
 os.makedirs(POSTS_DIR, exist_ok=True)
 os.makedirs(IMAGES_DIR, exist_ok=True)
 
-# 鍙戝竷杩涘害鐘舵侊紙渚涘墠绔疆璇級
+# 发布进度状态（供客户端轮询）
 publish_status = {'step': 'idle', 'message': '', 'error': False, 'error_step': ''}
 import threading
 _publish_lock = threading.Lock()
@@ -172,9 +172,9 @@ def get_all_content_files():
     }
 
 
-# ========== 鐗堟湰绠＄悊 ==========
+# ========== 版本管理 ==========
 
-# ========== 鑷姩鐗堟湰绠＄悊 ==========
+# ========== 自动版本管理 ==========
 
 def auto_create_code_version():
     """Internal helper."""
@@ -183,7 +183,7 @@ def auto_create_code_version():
     version = "trunk-" + now.strftime("%y_%m_%d")
     today = now.strftime("%Y-%m-%d")
 
-    # astro_config 璺緞
+    # Astro 配置目录
     astro_config_dir = os.path.join(os.path.dirname(BASE_DIR), "astro_config")
     if not os.path.exists(astro_config_dir):
         print(f"astro_config not found at {astro_config_dir}")
@@ -212,7 +212,7 @@ def auto_create_code_version():
         with open(fpath, "w", encoding="utf-8") as f:
             f.write("\n".join(out))
 
-    # 鏇存柊 layouts 鐩綍
+    # 更新 layouts 目录
     layouts_dir = os.path.join(astro_config_dir, "layouts")
     if os.path.exists(layouts_dir):
         for fname in os.listdir(layouts_dir):
@@ -266,7 +266,7 @@ def create_version():
             if os.path.exists(path):
                 shutil.copy2(path, version_dir)
     
-    # 淇濆瓨鐗堟湰鍏冩暟鎹?
+    # 保存版本元数据
     meta = {
         'timestamp': timestamp,
         'created_at': datetime.now().isoformat(),
@@ -279,7 +279,7 @@ def create_version():
     with open(os.path.join(version_dir, 'meta.json'), 'w', encoding='utf-8') as f:
         json.dump(meta, f, ensure_ascii=False, indent=2)
     
-    # 娓呯悊鏃х増鏈紝淇濈暀鏈杩?MAX_VERSIONS 涓?
+    # 清理旧快照，仅保留最近 MAX_VERSIONS 个
     cleanup_old_versions()
     
     return timestamp
@@ -341,7 +341,7 @@ def delete_version(timestamp):
     return False
 
 
-# ========== 椤甸潰璺敱 ==========
+# ========== 页面路由 ==========
 
 @app.route('/')
 def index():
@@ -356,8 +356,8 @@ def api_config():
         return jsonify({'success': True})
     else:
         config = load_json(CONFIG_FILE, {
-            'nickname': '榛庨噹',
-            'bio': ['涓滃寳浜猴紝5 骞?SLG 鎴樻枟绯荤粺 QA 缁忛獙', 'PMP 璁よ瘉', '姝ｅ湪瀛?Python'],
+            'nickname': 'Your Name',
+            'bio': ['在这里介绍你自己。', '分享你的技术、项目与生活。'],
             'email': 'hello@example.com',
             'socials': {'github': 'example', 'rss': 'https://example.com/rss.xml'}
         })
@@ -412,7 +412,7 @@ def api_about_content():
         save_json(ABOUT_CONTENT_FILE, data)
         return jsonify({'success': True})
     else:
-        # 榛樿妯″潡閰嶇疆
+        # 默认模块配置
         default_content = {
             'modules': [
                 {'id': 'footprint', 'title': '足迹', 'enabled': True}
@@ -643,7 +643,7 @@ def api_upload_image():
         return jsonify({'success': False, 'message': str(e)}), 500
 
 
-# ========== 鐗堟湰绠＄悊 API ==========
+# ========== 版本管理 API ==========
 
 @app.route('/api/versions', methods=['GET'])
 def api_get_versions():
@@ -679,7 +679,7 @@ def api_delete_version(timestamp):
     return jsonify({'success': False, 'message': '版本不存在'}), 404
 
 
-# ========== 鍙戝竷鐩稿叧 ==========
+# ========== 发布 ==========
 
 # Legacy page-generation helpers were removed; the Astro app reads JSON directly.
 
@@ -717,20 +717,20 @@ def api_publish():
             set_status('idle', 'SSH 私钥不可用', error=True, error_step='config')
             return jsonify({'success': False, 'message': '请设置有效的 WONELOG_SERVER_KEY', 'error_step': 'config'}), 400
 
-        # 鑾峰彇璇锋眰涓殑鐗堟湰鍙傛暟
+        # 获取请求中的版本参数
         req_data = request.json or {}
         selected_version = req_data.get('version')
         
-        # 濡傛灉鎸囧畾浜嗙増鏈紝鍏堟仮澶嶅埌璇ョ増鏈?
+        # 如果指定了版本，先恢复该快照
         if selected_version:
             if not restore_version(selected_version):
                 set_status('idle', '版本不存在', error=True, error_step='restore')
                 return jsonify({'success': False, 'message': f'版本 {selected_version} 不存在', 'error_step': 'restore'}), 404
         
-        # 鍒涘缓鏂扮増鏈揩鐓э紙鍙繚瀛樻暟鎹級
+        # 创建发布前快照
         version_ts = create_version()
         
-        # 杩炴帴鏈嶅姟鍣?
+        # 连接服务器
         set_status('connecting', '正在连接服务器...')
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -738,10 +738,10 @@ def api_publish():
                     allow_agent=False, look_for_keys=False)
         sftp = ssh.open_sftp()
         
-        # 鍙笂浼犳暟鎹枃浠讹紝涓嶄笂浼犱唬鐮?
+        # 上传数据文件，不上传应用源码
         set_status('upload', '正在上传数据文件...')
         
-        # 鍚屾鏂囩珷
+        # 同步文章
         local_files = [f for f in os.listdir(POSTS_DIR) if f.endswith('.md')]
         try:
             remote_files = sftp.listdir(SERVER_BLOG_DIR)
@@ -768,11 +768,11 @@ def api_publish():
                 if os.path.isfile(local_image):
                     sftp.put(local_image, f'{remote_images_dir}{image_name}')
         
-        # 涓婁紶閰嶇疆鏂囦欢锛堟暟鎹級鍒版湇鍔″櫒鐨刢ontent鐩綍
-        # 杩欐牱Astro椤圭洰鍙互璇诲彇杩欎簺JSON鏂囦欢
+        # 上传 JSON 配置到服务器 content 目录
+        # Astro 构建时会读取这些 JSON 文件
         import json as json_module
         
-        # 涓婁紶config.json
+        # 上传 config.json
         config_data = load_json(CONFIG_FILE, {})
         temp_config = os.path.join(BASE_DIR, 'temp_config.json')
         with open(temp_config, 'w', encoding='utf-8') as f:
@@ -780,7 +780,7 @@ def api_publish():
         sftp.put(temp_config, f'{SERVER_CONTENT_DIR}config.json')
         os.remove(temp_config)
         
-        # 涓婁紶cities.json
+        # 上传 cities.json
         cities_data = load_json(CITIES_FILE, {'cities': []})
         temp_cities = os.path.join(BASE_DIR, 'temp_cities.json')
         with open(temp_cities, 'w', encoding='utf-8') as f:
@@ -788,7 +788,7 @@ def api_publish():
         sftp.put(temp_cities, f'{SERVER_CONTENT_DIR}cities.json')
         os.remove(temp_cities)
         
-        # 涓婁紶links.json
+        # 上传 links.json
         links_data = load_json(LINKS_FILE, {'links': []})
         temp_links = os.path.join(BASE_DIR, 'temp_links.json')
         with open(temp_links, 'w', encoding='utf-8') as f:
@@ -803,7 +803,7 @@ def api_publish():
             json_module.dump(projects_data, f, ensure_ascii=False, indent=2)
         sftp.put(temp_projects, f'{SERVER_CONTENT_DIR}projects.json')
         os.remove(temp_projects)
-        # 涓婁紶about_content.json
+        # 上传 about_content.json
         about_content_data = load_json(ABOUT_CONTENT_FILE, {'modules': []})
         temp_about = os.path.join(BASE_DIR, 'temp_about.json')
         with open(temp_about, 'w', encoding='utf-8') as f:
@@ -813,7 +813,7 @@ def api_publish():
         
         sftp.close()
         
-        # 鏋勫缓
+        # 构建静态站点
         set_status('build', '正在构建博客站点...')
         build_cmd = f'cd {SERVER_SOURCE_DIR} && npm install && npm run build 2>&1'
         stdin, stdout, stderr = ssh.exec_command(build_cmd)
@@ -855,7 +855,7 @@ def api_publish():
     except Exception as e:
         import traceback
         traceback.print_exc()
-        # 鍒ゆ柇閿欒鍙戠敓鍦ㄥ摢涓樁娈?
+        # 判断错误发生阶段
         err_msg = str(e)
         if 'Authentication' in err_msg or 'auth' in err_msg.lower():
             set_status('connecting', f'连接失败: {err_msg}', error=True, error_step='connect')
@@ -881,7 +881,7 @@ def api_sync():
 
         results = {'articles': 0, 'config_updated': False, 'cities_updated': False}
 
-        # 瑙ｆ瀽 about.astro 鑾峰彇鍩庡競鍜岄厤缃?
+        # 解析 about.astro 中的城市与配置（兼容旧站点）
         try:
             with sftp.file('/var/www/wonelog-source/src/pages/about.astro', 'r') as f:
                 about_content = f.read().decode('utf-8')
@@ -900,7 +900,7 @@ def api_sync():
 
             config = load_json(CONFIG_FILE, {})
             
-            nick_match = re_module.search(r'鍏充簬</h1>.*?<ul.*?<li>(.*?)</li>', about_content, re_module.DOTALL)
+            nick_match = re_module.search(r'关于</h1>.*?<ul.*?<li>(.*?)</li>', about_content, re_module.DOTALL)
             if nick_match:
                 config['nickname'] = nick_match.group(1).strip()
 
@@ -918,9 +918,9 @@ def api_sync():
             save_json(CONFIG_FILE, config)
             results['config_updated'] = True
         except Exception as e:
-            print(f"瑙ｆ瀽 about.astro 澶辫触: {e}")
+            print(f"解析 about.astro 失败: {e}")
 
-        # 瑙ｆ瀽 index.astro
+        # 解析 index.astro
         try:
             with sftp.file('/var/www/wonelog-source/src/pages/index.astro', 'r') as f:
                 index_content = f.read().decode('utf-8')
@@ -957,9 +957,9 @@ def api_sync():
             save_json(CONFIG_FILE, config)
             results['config_updated'] = True
         except Exception as e:
-            print(f"瑙ｆ瀽 index.astro 澶辫触: {e}")
+            print(f"解析 index.astro 失败: {e}")
 
-        # 鍚屾鏂囩珷
+        # 同步文章
         remote_files = sftp.listdir(SERVER_BLOG_DIR)
         md_files = [f for f in remote_files if f.endswith('.md')]
 
@@ -1009,8 +1009,7 @@ if __name__ == '__main__':
     os.makedirs(POSTS_DIR, exist_ok=True)
     os.makedirs(IMAGES_DIR, exist_ok=True)
     os.makedirs(VERSIONS_DIR, exist_ok=True)
-    
-    print("馃幆 Wonelog Web 绠＄悊宸ュ叿 v2.0 鍚姩涓?..")
+    print("Wonelog 管理服务 v2.0 启动中...")
     print("   璁块棶: http://localhost:5000")
     print(f"   Version snapshots: keep latest {MAX_VERSIONS}")
     app.run(debug=True, port=5000)
